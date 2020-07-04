@@ -101,6 +101,11 @@ public class ObjectNode implements Node {
         return Objects.hash(map);
     }
 
+    @Override
+    public String toString() {
+        return "{ [" + map.entrySet().stream().map(each -> each.getKey() + " = " + each.getValue()).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
+    }
+
     public static class Builder {
 
         private final Map<Node, Node> map;

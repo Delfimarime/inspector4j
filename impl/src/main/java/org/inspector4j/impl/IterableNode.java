@@ -3,6 +3,7 @@ package org.inspector4j.impl;
 import org.inspector4j.api.Node;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class IterableNode implements Node {
 
@@ -109,6 +110,11 @@ public class IterableNode implements Node {
     @Override
     public int hashCode() {
         return Arrays.hashCode(container);
+    }
+
+    @Override
+    public String toString() {
+        return "{ [" + Arrays.stream(container).map(Objects::toString).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
     }
 
 }

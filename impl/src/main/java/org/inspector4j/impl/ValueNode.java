@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class ValueNode extends SingleValueNode implements Node {
 
-    private Object value;
+    private final Object value;
 
     public ValueNode(Object value) {
         this.value = value;
@@ -48,7 +48,7 @@ public class ValueNode extends SingleValueNode implements Node {
             throw new UnsupportedOperationException();
         }
 
-        if(value instanceof Character){
+        if (value instanceof Character) {
             return value.toString();
         }
 
@@ -57,7 +57,7 @@ public class ValueNode extends SingleValueNode implements Node {
 
     @Override
     public Long asLong() {
-        if(!isLong()){
+        if (!isLong()) {
             throw new UnsupportedOperationException();
         }
         return (Long) value;
@@ -65,7 +65,7 @@ public class ValueNode extends SingleValueNode implements Node {
 
     @Override
     public boolean asBoolean() {
-        if(!isBoolean()){
+        if (!isBoolean()) {
             throw new UnsupportedOperationException();
         }
         return (boolean) value;
@@ -73,7 +73,7 @@ public class ValueNode extends SingleValueNode implements Node {
 
     @Override
     public int asInt() {
-        if(!isInteger()){
+        if (!isInteger()) {
             throw new UnsupportedOperationException();
         }
         return (int) value;
@@ -90,6 +90,11 @@ public class ValueNode extends SingleValueNode implements Node {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "{ " + value + " }";
     }
 
 }

@@ -9,4 +9,8 @@ public class NullNode extends SingleValueNode implements Node {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "{}";
+    }
 }
