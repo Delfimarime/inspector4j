@@ -14,7 +14,13 @@ public class InspectorImpl implements Inspector {
 
     @Override
     public Node inspect(Object object) {
-        return nodeFactory.build(object);
+        if(object instanceof Node){
+            return (Node) object;
+        }
+        return null;
     }
+
+
+
 
 }

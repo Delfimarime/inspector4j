@@ -1,6 +1,7 @@
 package org.inspector4j.api;
 
-public class InspectionException extends RuntimeException {
+public class InspectionException extends InspectorException {
+
     public InspectionException() {
     }
 
@@ -15,4 +16,5 @@ public class InspectionException extends RuntimeException {
     public InspectionException(Throwable cause) {
         super(cause);
     }
+
 }
