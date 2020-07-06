@@ -8,6 +8,4 @@ public interface Analysis extends Node {
 
     Method getMethod();
 
-    Class<?>getBeanClass();
-
 }

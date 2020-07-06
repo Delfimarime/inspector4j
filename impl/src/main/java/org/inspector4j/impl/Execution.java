@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 
     private Method method;
     private Object[] args;
-    private Class<?> beanClass;
 
     public Method getMethod() {
         return method;
@@ -23,14 +22,6 @@ import java.lang.reflect.Method;
 
     public void setArgs(Object[] args) {
         this.args = args;
-    }
-
-    public Class<?> getBeanClass() {
-        return beanClass;
-    }
-
-    public void setBeanClass(Class<?> beanClass) {
-        this.beanClass = beanClass;
     }
 
 }

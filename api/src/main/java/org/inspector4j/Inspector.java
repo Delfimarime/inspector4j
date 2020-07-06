@@ -22,13 +22,4 @@ public interface Inspector {
      */
     Analysis inspect(Method method, Object[] args);
 
-    /**
-     * Inspects an method and arguments as a Node
-     * @param beanClass The class which this method has been invoked on
-     * @param method Method indented to be inspected
-     * @param args Arguments supplied to the method
-     * @return The representation as a {@link Node}
-     */
-    Analysis inspect(Class<?> beanClass, Method method, Object[] args);
-
 }

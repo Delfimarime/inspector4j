@@ -11,7 +11,6 @@ import java.util.Objects;
 public class AnalysisImpl extends ContainerNode implements Analysis {
 
     private Method method;
-    private Class<?> beanClass;
     private Map<Node, Node> map;
 
     @Override
@@ -35,39 +34,28 @@ public class AnalysisImpl extends ContainerNode implements Analysis {
     }
 
     @Override
-    public Class<?> getBeanClass() {
-        if (this.beanClass != null) {
-            return this.beanClass;
-        }
-
-        return getMethod().getDeclaringClass();
-    }
-
-    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         AnalysisImpl analysis = (AnalysisImpl) object;
         return Objects.equals(method, analysis.method) &&
-                Objects.equals(beanClass, analysis.beanClass) &&
                 Objects.equals(map, analysis.map);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), method, beanClass, map);
+        return Objects.hash(super.hashCode(), method, map);
     }
 
     @Override
     public String toString() {
-        return "{ \"beanClass\":\"" + getBeanClass() + "\" , \"method\": \"" + getMethod() + "\"  , \"args\":[" + getMap().entrySet().stream().map(each -> each.getKey() + " = " + each.getValue()).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
+        return "{ \"method\": \"" + getMethod() + "\"  , \"args\":[" + getMap().entrySet().stream().map(each -> each.getKey() + " = " + each.getValue()).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
     }
 
     public static class Builder {
 
         private Method method;
-        private Class<?> beanClass;
         private final Map<Node, Node> map;
 
         private Builder() {
@@ -106,13 +94,6 @@ public class AnalysisImpl extends ContainerNode implements Analysis {
             return this;
         }
 
-        public Builder setBeanClass(Class<?> beanClass) {
-            if (beanClass != null) {
-                this.beanClass = beanClass;
-            }
-            return this;
-        }
-
         public Node build() {
             AnalysisImpl instance = new AnalysisImpl();
 
@@ -122,7 +103,6 @@ public class AnalysisImpl extends ContainerNode implements Analysis {
 
             instance.map = map;
             instance.method = method;
-            instance.beanClass = beanClass;
 
             return instance;
         }

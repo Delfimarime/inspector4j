@@ -40,11 +40,6 @@ public class InspectorImpl implements Inspector {
 
     @Override
     public Analysis inspect(Method method, Object[] args) {
-        return inspect(null, method, args);
-    }
-
-    @Override
-    public Analysis inspect(Class<?> beanClass, Method method, Object[] args) {
 
         if (method == null) {
             throw new IllegalArgumentException("Method mustn't be null ");
@@ -55,7 +50,6 @@ public class InspectorImpl implements Inspector {
         }
 
         Execution instance = new Execution();
-        instance.setBeanClass(beanClass);
         instance.setMethod(method);
         instance.setArgs(args);
         return (Analysis) inspect(instance);
@@ -140,7 +134,7 @@ public class InspectorImpl implements Inspector {
             builder.set(parameter.getName(), chain.handle(instance.getArgs()[index]));
         }
 
-        return builder.setBeanClass(instance.getBeanClass()).setMethod(instance.getMethod()).build();
+        return builder.setMethod(instance.getMethod()).build();
     }
 
     private Node toMap(Object object, Chain chain) {
