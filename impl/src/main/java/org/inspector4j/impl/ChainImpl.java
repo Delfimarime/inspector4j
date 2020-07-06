@@ -25,7 +25,7 @@ public class ChainImpl implements Chain {
     }
 
     @Override
-    public synchronized Node handle(Object object) {
+    public Node handle(Object object) {
         try {
 
             if (object != null && cache.containsKey(keyOf(object))) {

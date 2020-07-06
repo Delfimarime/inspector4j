@@ -15,9 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 
-@SuppressWarnings({"unchecked"})
 public class NodeFactoryImpl implements NodeFactory {
 
     private final NullNode emptyNode;
@@ -319,7 +317,7 @@ public class NodeFactoryImpl implements NodeFactory {
             throw new UnsupportedTypeException("value contains unsupported types such as " + desc);
         }
 
-        Node[] container = value.stream().map(each -> asValue((Class) each.getClass(), each)).toArray(Node[]::new);
+        Node[] container = value.stream().map(each -> asValue(each.getClass(), each)).toArray(Node[]::new);
 
         return new SequenceNode(value.getClass(), container);
     }
@@ -343,7 +341,7 @@ public class NodeFactoryImpl implements NodeFactory {
         if (value == null) {
             return type == null ? create() : create(type);
         } else {
-            Node[] container = Arrays.stream(value).map(each -> asValue((Class) each.getClass(), each)).toArray(Node[]::new);
+            Node[] container = Arrays.stream(value).map(each -> asValue(each.getClass(), each)).toArray(Node[]::new);
             return new SequenceNode(type, container);
         }
     }
