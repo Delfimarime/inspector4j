@@ -13,8 +13,7 @@ public class InspectorTests {
         Object object=Person.builder().age(12).gender(null).name("John").build();
         Inspector instance = new InspectorImpl();
         Node node = instance.inspect(object);
-        Assert.assertEquals(node.size(),4);
-        System.out.println(node);
+        Assert.assertEquals(4,node.size());
     }
 
 
@@ -28,7 +27,6 @@ public class InspectorTests {
         Inspector instance = new InspectorImpl();
         Node node = instance.inspect(object);
         Assert.assertEquals(node.size(),4);
-        System.out.println(node);
     }
 
 }

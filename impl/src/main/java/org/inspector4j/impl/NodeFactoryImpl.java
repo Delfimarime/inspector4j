@@ -1,12 +1,11 @@
 package org.inspector4j.impl;
 
-import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
 import org.inspector4j.api.NodeFactory;
+import org.inspector4j.api.UnsupportedTypeException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -20,12 +19,6 @@ import java.util.HashMap;
 
 @SuppressWarnings({"unchecked"})
 public class NodeFactoryImpl implements NodeFactory {
-
-    private static final Class<?>[] KNOWN_TYPES = {int.class, Integer.class, float.class, Float.class,
-            long.class, Long.class, byte.class, double.class, Double.class, byte.class, Byte.class,
-            char.class, Character.class, CharSequence.class, boolean.class, Boolean.class,
-            BigDecimal.class, BigInteger.class, Date.class, LocalTime.class, LocalDate.class,
-            LocalDateTime.class, ZonedDateTime.class, Method.class, Class.class, Field.class};
 
     private final NullNode emptyNode;
 
@@ -317,13 +310,13 @@ public class NodeFactoryImpl implements NodeFactory {
     @SuppressWarnings({"rawtypes"})
     public <T> Node create(Collection<T> value) {
         if (value == null) {
-            throw new IllegalArgumentException("value mustn't be null");
+            return create();
         }
 
-        String desc = value.stream().filter(each -> !isKnownType(each.getClass())).map(Object::toString).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse(null);
+        String desc = value.stream().filter(each -> !Commons.isKnownType(each.getClass())).map(Object::toString).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse(null);
 
         if (desc != null) {
-            throw new IllegalArgumentException("value contains unsupported types such as " + desc);
+            throw new UnsupportedTypeException("value contains unsupported types such as " + desc);
         }
 
         Node[] container = value.stream().map(each -> asValue((Class) each.getClass(), each)).toArray(Node[]::new);
@@ -331,38 +324,13 @@ public class NodeFactoryImpl implements NodeFactory {
         return new SequenceNode(value.getClass(), container);
     }
 
-    private boolean isKnownType(Type type) {
-        if (type == null) {
-            return Boolean.FALSE;
-        } else if (TypeUtils.isAssignable(type, Enum.class)) {
-            return Boolean.TRUE;
-        } else if (TypeUtils.isArrayType(type)) {
-            return isKnownType(TypeUtils.getArrayComponentType(type));
-        } else if (TypeUtils.isAssignable(type, Collection.class)) {
-            return isKnownType(TypeUtils.getRawType(type,Collection.class));
-        } else {
-            return isEqualAny(type, KNOWN_TYPES);
-        }
-    }
-
     @Override
     public Node.Builder newBuilder() {
-        return new NodeBuilderImpl(this,new HashMap<>());
+        return new NodeBuilderImpl(this);
     }
 
-    private boolean isEqualAny(Type cls, Type... anyOf) {
-        if (cls == null && anyOf == null) {
-            return true;
-        } else if (cls == null) {
-            return false;
-        } else if (anyOf == null) {
-            return false;
-        } else {
-            return Arrays.asList(anyOf).contains(cls);
-        }
-    }
 
-    private <T> Node asValue(Class<T> type, T value) {
+    private Node asValue(Class<?> type, Object value) {
         if (value == null) {
             return type == null ? create() : create(type);
         } else {
@@ -375,7 +343,7 @@ public class NodeFactoryImpl implements NodeFactory {
         if (value == null) {
             return type == null ? create() : create(type);
         } else {
-            Node[] container = Arrays.stream(value).map(each -> asValue((Class) each.getClass(), (T) each)).toArray(Node[]::new);
+            Node[] container = Arrays.stream(value).map(each -> asValue((Class) each.getClass(), each)).toArray(Node[]::new);
             return new SequenceNode(type, container);
         }
     }

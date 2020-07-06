@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class NodeBuilderImpl implements Node.Builder {
 
+    private Class<?> type;
     private final NodeFactory factory;
     private final Map<String, Node> cache;
     private final Map<String, Node> container;
@@ -37,7 +38,15 @@ public class NodeBuilderImpl implements Node.Builder {
     @Override
     public Node build() {
         Map<Node, Node> map = container.entrySet().stream().collect(Collectors.toMap(x -> (Node) factory.create(x.getKey()), x -> (Node) x.getValue()));
-        return ObjectNode.Builder.get().setAll(map).build();
+        return ObjectNode.Builder.get().setType(type).setAll(map).build();
+    }
+
+    @Override
+    public Node.Builder setType(Class<?> type) {
+        if (type != null) {
+            this.type = type;
+        }
+        return this;
     }
 
     @Override

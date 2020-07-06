@@ -730,6 +730,8 @@ public interface Node {
 
         <T> Builder setNode(String fieldName, Collection<T> value);
 
+        Builder setType(Class<?> type);
+
     }
 
 }
