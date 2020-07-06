@@ -9,7 +9,7 @@ public class Factory {
     }
 
     public String create(Person person, Type type) {
-        throw new UnsupportedOperationException("Cannot create Person(s)");
+        throw new UnsupportedOperationException("Cannot create Person of " + type);
     }
 
 }

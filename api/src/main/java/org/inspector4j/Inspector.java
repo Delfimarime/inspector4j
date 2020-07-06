@@ -1,4 +1,7 @@
-package org.inspector4j.api;
+package org.inspector4j;
+
+import org.inspector4j.api.Analysis;
+import org.inspector4j.api.Node;
 
 import java.lang.reflect.Method;
 

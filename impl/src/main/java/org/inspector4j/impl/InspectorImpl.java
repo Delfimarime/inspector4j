@@ -2,6 +2,7 @@ package org.inspector4j.impl;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
+import org.inspector4j.Inspector;
 import org.inspector4j.api.*;
 
 import java.lang.reflect.Field;
