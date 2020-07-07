@@ -24,9 +24,4 @@ public class NullNode extends SingularNode implements Node {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "{}";
-    }
-
 }

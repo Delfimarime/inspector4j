@@ -401,9 +401,4 @@ public class SequenceNode implements Node {
         return Arrays.hashCode(container);
     }
 
-    @Override
-    public String toString() {
-        return "{ [" + Arrays.stream(container).map(Objects::toString).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
-    }
-
 }

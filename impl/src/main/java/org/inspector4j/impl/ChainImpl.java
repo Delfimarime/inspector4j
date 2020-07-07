@@ -14,48 +14,47 @@ public class ChainImpl implements Chain {
     private Object bean;
     private boolean isSubContext;
 
-    private final List<Action> sequence;
-    private final Map<String, Node> cache;
+    private final List<Action> actions;
+    private final Map<String, Node> beanCache;
+    private final Map<String, Node> proxyCache;
 
-    public ChainImpl(List<Action> sequence) {
+    public ChainImpl(List<Action> actions) {
         this.initialize();
         this.isSubContext = false;
-        this.sequence = sequence;
-        this.cache = new HashMap<>();
+        this.actions = actions;
+        this.beanCache = new HashMap<>();
+        this.proxyCache = new HashMap<>();
     }
 
     @Override
     public Node handle(Object object) {
         try {
+            String key = object == null ? null : keyOf(object);
 
-            if (object != null && cache.containsKey(keyOf(object))) {
-                return cache.get(keyOf(object));
+            if (key != null && this.beanCache.containsKey(key)) {
+                return this.beanCache.get(key);
             }
 
-            if (bean != null && !bean.equals(object)) {
-                isSubContext = Boolean.TRUE;
+            if (key != null && this.proxyCache.containsKey(key)) {
+                return this.proxyCache.get(key);
             }
+
+            this.isSubContext = this.bean != null && !this.bean.equals(object);
 
             if (isSubContext) {
-                int index = this.index;
-                Object bean = this.bean;
-
-                initialize();
-                Node node = handle(object);
-                initialize(bean, index, Boolean.TRUE);
-                return node;
+                return forSubContext(object);
             }
 
-            bean = object;
-            return execute(object, () -> this.sequence.get(this.index++).handle(object, this));
+            this.bean = object;
 
+            if (this.bean != null) {
+                this.proxyCache.remove(keyOf(this.bean));
+            }
+
+            return this.execute(object, () -> this.actions.get(this.index++).handle(object, this));
         } catch (IndexOutOfBoundsException ex) {
             throw new InspectionException("No Action to handle the node transformation", ex);
         }
-    }
-
-    private void initialize() {
-        initialize(null, 0, Boolean.FALSE);
     }
 
     private String keyOf(Object object) {
@@ -63,6 +62,29 @@ public class ChainImpl implements Chain {
             return null;
         }
         return object.getClass() + "@" + object.hashCode();
+    }
+
+    private Node referenceOf(String key) {
+        return new ReferenceNode(() -> beanCache.get(key));
+    }
+
+    private Node forSubContext(Object object) {
+        int index = this.index;
+        Object bean = this.bean;
+        String bKey = bean == null ? null : keyOf(bean);
+
+        if (bKey != null && !proxyCache.containsKey(bKey)) {
+            proxyCache.put(bKey, referenceOf(bKey));
+        }
+
+        initialize();
+        Node node = handle(object);
+        initialize(bean, index, Boolean.TRUE);
+        return node;
+    }
+
+    private void initialize() {
+        initialize(null, 0, Boolean.FALSE);
     }
 
     private void initialize(Object object, int index, boolean isSubContext) {
@@ -77,8 +99,8 @@ public class ChainImpl implements Chain {
 
         Node node = factory.get();
 
-        if (keyOf != null && !cache.containsKey(keyOf)) {
-            cache.put(keyOf, node);
+        if (keyOf != null && !beanCache.containsKey(keyOf)) {
+            beanCache.put(keyOf, node);
         }
 
         return node;

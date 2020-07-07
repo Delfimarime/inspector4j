@@ -387,15 +387,4 @@ public class ValueNode extends SingularNode implements Node {
         return Objects.hash(value);
     }
 
-    @Override
-    public String toString() {
-        if (value instanceof Character) {
-            return "{ '" + value.toString() + "' }";
-        } else if (value instanceof String || value instanceof CharSequence) {
-            return "{ \"" + value.toString() + "\" }";
-        } else {
-            return "{ " + value + " }";
-        }
-    }
-
 }

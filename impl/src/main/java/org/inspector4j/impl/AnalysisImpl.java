@@ -48,11 +48,6 @@ public class AnalysisImpl extends ContainerNode implements Analysis {
         return Objects.hash(super.hashCode(), method, map);
     }
 
-    @Override
-    public String toString() {
-        return "{ \"method\": \"" + getMethod() + "\"  , \"args\":[" + getMap().entrySet().stream().map(each -> each.getKey() + " = " + each.getValue()).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
-    }
-
     public static class Builder {
 
         private Method method;

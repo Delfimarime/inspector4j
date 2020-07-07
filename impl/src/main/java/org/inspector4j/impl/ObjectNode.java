@@ -38,15 +38,6 @@ public class ObjectNode extends ContainerNode implements Node {
         return Objects.hash(map);
     }
 
-    @Override
-    public String toString() {
-        return "{ [" + map.entrySet().stream().map(each -> each.getKey() + " = " + each.getValue()).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
-    }
-
-    private Node find(BiPredicate<Node, Node> condition) {
-        return map.entrySet().stream().filter(each -> condition.test(each.getKey(), each.getValue())).map(Map.Entry::getValue).findFirst().orElse(null);
-    }
-
     public static class Builder {
 
         private Class<?> type;
