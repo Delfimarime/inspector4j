@@ -1,23 +1,21 @@
 package org.inspector4j.impl;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.inspector4j.api.InspectionException;
 import org.inspector4j.api.Node;
-import org.inspector4j.api.NodeBuilder;
 import org.inspector4j.api.NodeFactory;
+import org.inspector4j.api.UnsupportedTypeException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 
-@SuppressWarnings({"unchecked"})
 public class NodeFactoryImpl implements NodeFactory {
 
     private final NullNode emptyNode;
@@ -27,290 +25,325 @@ public class NodeFactoryImpl implements NodeFactory {
     }
 
     @Override
-    public Node build() {
+    public Node create() {
         return emptyNode;
     }
 
     @Override
-    public Node build(String value) {
-        return asValue(value);
+    public Node nullOf(Class<?> type) {
+        return new NullNode(type);
     }
 
     @Override
-    public Node build(CharSequence value) {
-        return asValue(value);
+    public Node create(String value) {
+        return asValue(String.class, value);
     }
 
     @Override
-    public Node build(int value) {
-        return asValue(value);
+    public Node create(CharSequence value) {
+        return asValue(CharSequence.class, value);
     }
 
     @Override
-    public Node build(Integer value) {
-        return asValue(value);
+    public Node create(int value) {
+        return asValue(int.class, value);
     }
 
     @Override
-    public Node build(Long value) {
-        return asValue(value);
+    public Node create(Integer value) {
+        return asValue(Integer.class, value);
     }
 
     @Override
-    public Node build(long value) {
-        return asValue(value);
+    public Node create(Long value) {
+        return asValue(Long.class, value);
     }
 
     @Override
-    public Node build(char value) {
-        return asValue(value);
+    public Node create(long value) {
+        return asValue(long.class, value);
     }
 
     @Override
-    public Node build(Character value) {
-        return asValue(value);
+    public Node create(char value) {
+        return asValue(char.class, value);
     }
 
     @Override
-    public Node build(float value) {
-        return asValue(value);
+    public Node create(Character value) {
+        return asValue(Character.class, value);
     }
 
     @Override
-    public Node build(Float value) {
-        return asValue(value);
+    public Node create(float value) {
+        return asValue(float.class, value);
     }
 
     @Override
-    public Node build(double value) {
-        return asValue(value);
+    public Node create(Float value) {
+        return asValue(Float.class, value);
     }
 
     @Override
-    public Node build(Double value) {
-        return asValue(value);
+    public Node create(double value) {
+        return asValue(double.class, value);
     }
 
     @Override
-    public Node build(boolean value) {
-        return asValue(value);
+    public Node create(Double value) {
+        return asValue(Double.class, value);
     }
 
     @Override
-    public Node build(Boolean value) {
-        return asValue(value);
+    public Node create(boolean value) {
+        return asValue(boolean.class, value);
     }
 
     @Override
-    public Node build(byte value) {
-        return asValue(value);
+    public Node create(Boolean value) {
+        return asValue(Boolean.class, value);
     }
 
     @Override
-    public Node build(Byte value) {
-        return asValue(value);
+    public Node create(byte value) {
+        return asValue(byte.class, value);
     }
 
     @Override
-    public Node build(BigDecimal value) {
-        return asValue(value);
+    public Node create(Byte value) {
+        return asValue(Byte.class, value);
     }
 
     @Override
-    public Node build(BigInteger value) {
-        return asValue(value);
+    public Node create(BigDecimal value) {
+        return asValue(BigDecimal.class, value);
     }
 
     @Override
-    public Node build(Date value) {
-        return asValue(value);
+    public Node create(BigInteger value) {
+        return asValue(BigInteger.class, value);
     }
 
     @Override
-    public Node build(Timestamp value) {
-        return asValue(value);
+    public Node create(Date value) {
+        return asValue(Date.class, value);
     }
 
     @Override
-    public Node build(LocalTime value) {
-        return asValue(value);
+    public Node create(Enum<?> value) {
+        return asValue(Enum.class, value);
     }
 
     @Override
-    public Node build(LocalDate value) {
-        return asValue(value);
+    public Node create(LocalTime value) {
+        return asValue(LocalTime.class, value);
     }
 
     @Override
-    public Node build(LocalDateTime value) {
-        return asValue(value);
+    public Node create(LocalDate value) {
+        return asValue(LocalDate.class, value);
     }
 
     @Override
-    public Node build(ZonedDateTime value) {
-        return asValue(value);
+    public Node create(LocalDateTime value) {
+        return asValue(LocalDateTime.class, value);
     }
 
     @Override
-    public <T> Node build(T[] value) {
+    public Node create(ZonedDateTime value) {
+        return asValue(ZonedDateTime.class, value);
+    }
+
+    @Override
+    public Node create(Method value) {
+        return asValue(Method.class, value);
+    }
+
+    @Override
+    public Node create(Class<?> value) {
+        return asValue(Class.class, value);
+    }
+
+    @Override
+    public Node create(Field value) {
+        return asValue(Field.class, value);
+    }
+
+    @Override
+    public Node create(String[] value) {
+        return asValue(String[].class, value);
+    }
+
+    @Override
+    public Node create(CharSequence[] value) {
+        return asValue(CharSequence[].class, value);
+    }
+
+    @Override
+    public Node create(int[] value) {
+        return asValue(int[].class, value);
+    }
+
+    @Override
+    public Node create(Integer[] value) {
+        return asValue(Integer[].class, value);
+    }
+
+    @Override
+    public Node create(Long[] value) {
+        return asValue(Long[].class, value);
+    }
+
+    @Override
+    public Node create(long[] value) {
+        return asValue(long[].class, value);
+    }
+
+    @Override
+    public Node create(char[] value) {
+        return asValue(char[].class, value);
+    }
+
+    @Override
+    public Node create(Character[] value) {
+        return asValue(Character[].class, value);
+    }
+
+    @Override
+    public Node create(float[] value) {
+        return asValue(float[].class, value);
+    }
+
+    @Override
+    public Node create(Float[] value) {
+        return asValue(Float[].class, value);
+    }
+
+    @Override
+    public Node create(double[] value) {
+        return asValue(double[].class, value);
+    }
+
+    @Override
+    public Node create(Double[] value) {
+        return asValue(Double[].class, value);
+    }
+
+    @Override
+    public Node create(boolean[] value) {
+        return asValue(boolean[].class, value);
+    }
+
+    @Override
+    public Node create(Boolean[] value) {
+        return asValue(Boolean[].class, value);
+    }
+
+    @Override
+    public Node create(byte[] value) {
+        return asValue(byte[].class, value);
+    }
+
+    @Override
+    public Node create(Byte[] value) {
+        return asValue(Byte[].class, value);
+    }
+
+    @Override
+    public Node create(BigDecimal[] value) {
+        return asValue(BigDecimal[].class, value);
+    }
+
+    @Override
+    public Node create(BigInteger[] value) {
+        return asValue(BigInteger[].class, value);
+    }
+
+    @Override
+    public Node create(Date[] value) {
+        return asValue(Date[].class, value);
+    }
+
+    @Override
+    public Node create(Enum<?>[] value) {
+        return asValue(Enum[].class, value);
+    }
+
+    @Override
+    public Node create(LocalTime[] value) {
+        return asValue(LocalTime[].class, value);
+    }
+
+    @Override
+    public Node create(LocalDate[] value) {
+        return asValue(LocalDate[].class, value);
+    }
+
+    @Override
+    public Node create(LocalDateTime[] value) {
+        return asValue(LocalDateTime[].class, value);
+    }
+
+    @Override
+    public Node create(ZonedDateTime[] value) {
+        return asValue(ZonedDateTime[].class, value);
+    }
+
+    @Override
+    public Node create(Method[] value) {
+        return asValue(Method[].class, value);
+    }
+
+    @Override
+    public Node create(Class<?>[] value) {
+        return asValue(Class[].class, value);
+    }
+
+    @Override
+    public Node create(Field[] value) {
+        return asValue(Field[].class, value);
+    }
+
+    @Override
+    @SuppressWarnings({"rawtypes"})
+    public <T> Node create(Collection<T> value) {
         if (value == null) {
-            return build();
+            return create();
         }
-        return new IterableNode(Arrays.stream(value).map(this::build).toArray(Node[]::new));
+
+        String desc = value.stream().filter(each -> !Commons.isKnownType(each.getClass())).map(Object::toString).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse(null);
+
+        if (desc != null) {
+            throw new UnsupportedTypeException("value contains unsupported types such as " + desc);
+        }
+
+        Node[] container = value.stream().map(each -> asValue(each.getClass(), each)).toArray(Node[]::new);
+
+        return new SequenceNode(value.getClass(), container);
     }
 
     @Override
-    public <T, K> Node build(Map<T, K> object) {
-        Map<Node, Node> container = object.entrySet().stream().collect(Collectors.toMap(this::build, this::build));
-        return ObjectNode.Builder.create(container);
+    public Node.Builder newBuilder() {
+        return new NodeBuilderImpl(this);
     }
 
-    @Override
-    public <T> Node build(Collection<T> object) {
-        return new IterableNode(((Collection<?>) object).stream().map(this::build).toArray(Node[]::new));
-    }
 
-    @Override
-    public NodeBuilder builder() {
-        return new NodeBuilderImpl(this, new HashMap<>());
-    }
-
-    @Override
-    public Node build(Object object) {
-
-        if (object == null) {
-            return emptyNode;
-        }
-
-        if (object instanceof Node) {
-            return (Node) object;
-        }
-
-        if (object instanceof Map) {
-            return build((Map<?, ?>) object);
-        }
-
-        if (object instanceof Collection<?>) {
-            return build((Collection<?>) object);
-        }
-
-        Class<?> cls = object.getClass();
-
-        if (isEqualAny(cls, int.class, Integer.class)) {
-            return build((Integer) object);
-        }
-
-        if (isEqualAny(cls, String.class)) {
-            return build((String) object);
-        }
-
-        if (isEqualAny(cls, CharSequence.class)) {
-            return build((CharSequence) object);
-        }
-
-        if (isEqualAny(cls, char.class, Character.class)) {
-            return build((Character) object);
-        }
-
-        if (isEqualAny(cls, long.class, Long.class)) {
-            return build((Long) object);
-        }
-
-        if (isEqualAny(cls, float.class, Float.class)) {
-            return build((Float) object);
-        }
-
-        if (isEqualAny(cls, double.class, Double.class)) {
-            return build((Double) object);
-        }
-
-        if (isEqualAny(cls, byte.class, Byte.class)) {
-            return build((Byte) object);
-        }
-
-        if (isEqualAny(cls, boolean.class, Boolean.class)) {
-            return build((Byte) object);
-        }
-
-        if (isEqualAny(cls, BigDecimal.class)) {
-            return build((BigDecimal) object);
-        }
-
-        if (isEqualAny(cls, BigInteger.class)) {
-            return build((BigInteger) object);
-        }
-
-        if (isEqualAny(cls, Timestamp.class)) {
-            return build((Timestamp) object);
-        }
-
-        if (isEqualAny(cls, Date.class)) {
-            return build((Date) object);
-        }
-
-        if (isEqualAny(cls, LocalTime.class)) {
-            return build((LocalTime) object);
-        }
-
-        if (isEqualAny(cls, LocalDate.class)) {
-            return build((LocalDate) object);
-        }
-
-        if (isEqualAny(cls, LocalDateTime.class)) {
-            return build((LocalDateTime) object);
-        }
-
-        if (isEqualAny(cls, ZonedDateTime.class)) {
-            return build((ZonedDateTime) object);
-        }
-
-        if (cls.isArray()) {
-            return build(asArray(object));
-        }
-
-        return asObjectNode(object);
-    }
-
-    private Node asObjectNode(Object value) {
-        try {
-
-            NodeBuilder builder = builder();
-
-            for (Field field : FieldUtils.getAllFieldsList(value.getClass())) {
-
-                Object readField = FieldUtils.readField(field, value, true);
-
-                if (readField == null) {
-                    builder.setNode(field.getName(), emptyNode);
-                } else {
-                    builder.setNode(field.getName(), build(readField));
-                }
-            }
-
-            return builder.build();
-        } catch (IllegalAccessException ex) {
-            throw new InspectionException(ex);
-        }
-    }
-
-    private boolean isEqualAny(Class<?> cls, Class<?>... anyOf) {
-        if (cls == null && anyOf == null) {
-            return true;
-        } else if (cls == null) {
-            return false;
-        } else if (anyOf == null) {
-            return false;
+    private Node asValue(Class<?> type, Object value) {
+        if (value == null) {
+            return type == null ? create() : create(type);
         } else {
-            return Arrays.asList(anyOf).contains(cls);
+            return new ValueNode(value);
         }
     }
 
-    private <T> T[] asArray(Object readField) {
-        return (T[]) readField;
-    }
-
-    private Node asValue(Object value) {
-        return value == null ? build() : new ValueNode(value);
+    @SuppressWarnings({"rawtypes"})
+    private <T> Node asValue(Class<T[]> type, T[] value) {
+        if (value == null) {
+            return type == null ? create() : create(type);
+        } else {
+            Node[] container = Arrays.stream(value).map(each -> asValue(each.getClass(), each)).toArray(Node[]::new);
+            return new SequenceNode(type, container);
+        }
     }
 
 }

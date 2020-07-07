@@ -1,19 +1,17 @@
 package org.inspector4j.impl;
 
+import org.inspector4j.api.Analysis;
 import org.inspector4j.api.Node;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiPredicate;
 
-public class ObjectNode extends ContainerNode implements Node {
+public class AnalysisImpl extends ContainerNode implements Analysis {
 
-    private Class<?> type;
+    private Method method;
     private Map<Node, Node> map;
-
-    private ObjectNode() {
-    }
 
     @Override
     protected Map<Node, Node> getMap() {
@@ -22,25 +20,37 @@ public class ObjectNode extends ContainerNode implements Node {
 
     @Override
     public Class<?> getType() {
-        return this.type;
+        return Analysis.class;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ObjectNode that = (ObjectNode) o;
-        return Objects.equals(map, that.map);
+    public Node[] getArgs() {
+        return map.values().toArray(new Node[0]);
+    }
+
+    @Override
+    public Method getMethod() {
+        return this.method;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        AnalysisImpl analysis = (AnalysisImpl) object;
+        return Objects.equals(method, analysis.method) &&
+                Objects.equals(map, analysis.map);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(map);
+        return Objects.hash(super.hashCode(), method, map);
     }
 
     public static class Builder {
 
-        private Class<?> type;
+        private Method method;
         private final Map<Node, Node> map;
 
         private Builder() {
@@ -49,13 +59,6 @@ public class ObjectNode extends ContainerNode implements Node {
 
         public static Builder get() {
             return new Builder();
-        }
-
-        public Builder setType(Class<?> type) {
-            if (type != null) {
-                this.type = type;
-            }
-            return this;
         }
 
         public Builder set(String name, Node node) {
@@ -79,22 +82,25 @@ public class ObjectNode extends ContainerNode implements Node {
             return this;
         }
 
+        public Builder setMethod(Method method) {
+            if (method != null) {
+                this.method = method;
+            }
+            return this;
+        }
+
         public Node build() {
-            ObjectNode instance = new ObjectNode();
+            AnalysisImpl instance = new AnalysisImpl();
 
-            if (type == null) {
-                throw new IllegalArgumentException("Type mustn't be null");
+            if (method == null) {
+                throw new IllegalArgumentException("Method mustn't be null");
             }
 
-            if (map.isEmpty()) {
-                throw new IllegalArgumentException("ObjectNode must have at least one field");
-            }
-
-            instance.type = type;
             instance.map = map;
+            instance.method = method;
+
             return instance;
         }
 
     }
-
 }
