@@ -144,6 +144,6 @@ JIRA issue in the Pull Request.
 Inspector4j requires Apache Maven 3.x. To build from source and install to your local Maven repository, execute the following:
 
 ```sh
-mvn install - f api
-mvn install - f impl
+mvn install -f api
+mvn install -f impl
 ```
