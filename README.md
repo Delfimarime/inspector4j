@@ -108,7 +108,7 @@ public class Example {
       Person male = Person.builder().age(30).gender(null).name("Adam").children(null).build();
       Person female = Person.builder().age(29).gender(null).name("Lilith").children(null).build();
       female.setFriends(new Person[]{male});
-      adam.setFriends(new Person[]{female});
+      male.setFriends(new Person[]{female});
       return male;
     }   
 
