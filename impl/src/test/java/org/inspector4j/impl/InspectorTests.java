@@ -39,13 +39,15 @@ public class InspectorTests {
         // System.out.println(instance.inspect(personConstructor, new Object[]{getFamilyFather(), Type.WOOD}));
         Analysis node = instance.inspect(personConstructor, new Object[]{getFriendly(), Type.WOOD});
 
-        System.out.println(node.get("person").get("friends").get(0).get("name"));
+        System.out.println(node.get("person").get("value").get(0).asText());
 
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name"));
+        System.out.println(node.get("person").get("friends").get(0).get("name").asText());
 
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name"));
+        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name").asText());
 
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name"));
+        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
+
+        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
 
     }
 
@@ -61,6 +63,10 @@ public class InspectorTests {
         return Person.builder().age(30).gender(null).name("John").children(children).build();
     }
 
+    /**
+     * Creates a male {@link Person} which is friend of female {@link Person} where both are friends of each other
+     * @return male {@link Person}
+     */
     private Person getFriendly() {
         Person adam = Person.builder().age(30).gender(null).name("Adam").children(null).build();
         Person lilith = Person.builder().age(29).gender(null).name("Lilith").children(null).build();
