@@ -17,7 +17,6 @@ import java.util.function.BiPredicate;
 
 public abstract class ContainerNode implements Node {
 
-
     protected abstract Map<Node,Node>getMap();
 
     @Override

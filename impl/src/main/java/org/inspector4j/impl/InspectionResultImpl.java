@@ -1,6 +1,6 @@
 package org.inspector4j.impl;
 
-import org.inspector4j.api.Analysis;
+import org.inspector4j.api.InspectionResult;
 import org.inspector4j.api.Node;
 
 import java.lang.reflect.Method;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class AnalysisImpl extends ContainerNode implements Analysis {
+public class InspectionResultImpl extends ContainerNode implements InspectionResult {
 
     private Method method;
     private Map<Node, Node> map;
@@ -20,7 +20,7 @@ public class AnalysisImpl extends ContainerNode implements Analysis {
 
     @Override
     public Class<?> getType() {
-        return Analysis.class;
+        return InspectionResult.class;
     }
 
     @Override
@@ -34,11 +34,22 @@ public class AnalysisImpl extends ContainerNode implements Analysis {
     }
 
     @Override
+    public Map<Object, Object> asMap() {
+        return toMap();
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public Map<Object, Object> toMap() {
+        return (Map<Object, Object>) Commons.unwrap(map);
+    }
+
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
-        AnalysisImpl analysis = (AnalysisImpl) object;
+        InspectionResultImpl analysis = (InspectionResultImpl) object;
         return Objects.equals(method, analysis.method) &&
                 Objects.equals(map, analysis.map);
     }
@@ -90,7 +101,7 @@ public class AnalysisImpl extends ContainerNode implements Analysis {
         }
 
         public Node build() {
-            AnalysisImpl instance = new AnalysisImpl();
+            InspectionResultImpl instance = new InspectionResultImpl();
 
             if (method == null) {
                 throw new IllegalArgumentException("Method mustn't be null");

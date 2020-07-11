@@ -82,14 +82,14 @@ Finally, consider the Example class which must inspect ***create*** method from 
 package org.inspector4j;
 
 import org.inspector4j.Inspector;
-import org.inspector4j.api.Analysis;
-import org.inspector4j.api.Inspect4J;
+import org.inspector4j.api.InspectionResult;
+import org.inspector4j.api.Inspector4J;
 import org.inspector4j.api.Node;
 
 public class Example {
 
     public static void main (String[]args){
-        Inspector instance = Inspect4J.get(); // GETS INSPECTOR INSTANCE WHICH IS USED TO INSPECT 
+        Inspector instance = Inspector4J.get(); // GETS INSPECTOR INSTANCE WHICH IS USED TO INSPECT 
         Method method = Factory.class.getMethod("create", Person.class, Type.class); // METHOD TO BE INSPECT FROM CLASS Factory
         Analysis node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD}); // INSPECTS THE METHOD WITH THE ARGS PASSED ON THE METHOD AND PRODUCES AN ANALYSIS WHICH REPRESENTS THE INSPECTION 
         

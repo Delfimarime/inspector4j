@@ -8,13 +8,17 @@ public interface Action {
 
     Node handle(Object object, Chain chain);
 
-    interface Builder {
+    interface Builder  {
 
         Builder setCondition(BiPredicate<Object, Chain> condition);
 
         Builder setExecution(BiFunction<Object, Chain, Node> execution);
 
+        Builder next();
+
         Action build();
+
+        Chain.Builder apply();
 
     }
 

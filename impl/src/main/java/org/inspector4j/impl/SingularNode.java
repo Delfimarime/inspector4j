@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Map;
 
 public abstract class SingularNode implements Node {
 
@@ -362,4 +363,13 @@ public abstract class SingularNode implements Node {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public Map<Object, Object> asMap() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Map<Object, Object> toMap() {
+        throw new UnsupportedOperationException();
+    }
 }

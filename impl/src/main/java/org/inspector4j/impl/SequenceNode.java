@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SequenceNode implements Node {
 
@@ -185,7 +186,7 @@ public class SequenceNode implements Node {
 
     @Override
     public boolean isContainer() {
-        return true;
+        return false;
     }
 
     @Override
@@ -381,6 +382,16 @@ public class SequenceNode implements Node {
     @Override
     public Field asField() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Map<Object, Object> asMap() {
+        return toMap();
+    }
+
+    @Override
+    public Map<Object, Object> toMap() {
+        return Arrays.stream(keys()).collect(Collectors.toMap(Commons::unwrap, index -> Commons.unwrap(container[(int) index])));
     }
 
     @Override

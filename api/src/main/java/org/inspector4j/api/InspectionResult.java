@@ -2,7 +2,7 @@ package org.inspector4j.api;
 
 import java.lang.reflect.Method;
 
-public interface Analysis extends Node {
+public interface InspectionResult extends Node {
 
     Node[] getArgs();
 

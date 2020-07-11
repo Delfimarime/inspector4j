@@ -305,7 +305,6 @@ public class NodeFactoryImpl implements NodeFactory {
     }
 
     @Override
-    @SuppressWarnings({"rawtypes"})
     public <T> Node create(Collection<T> value) {
         if (value == null) {
             return create();
@@ -336,7 +335,6 @@ public class NodeFactoryImpl implements NodeFactory {
         }
     }
 
-    @SuppressWarnings({"rawtypes"})
     private <T> Node asValue(Class<T[]> type, T[] value) {
         if (value == null) {
             return type == null ? create() : create(type);

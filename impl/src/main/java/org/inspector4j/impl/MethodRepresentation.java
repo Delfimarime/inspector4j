@@ -3,7 +3,7 @@ package org.inspector4j.impl;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
- class Execution implements Serializable {
+ class MethodRepresentation implements Serializable {
 
     private Method method;
     private Object[] args;

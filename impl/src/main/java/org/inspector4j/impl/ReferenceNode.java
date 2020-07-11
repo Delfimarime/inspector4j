@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -365,6 +366,16 @@ public class ReferenceNode implements Node {
     @Override
     public Field asField() {
         return loader.get().asField();
+    }
+
+    @Override
+    public Map<Object, Object> asMap() {
+        return toMap();
+    }
+
+    @Override
+    public Map<Object, Object> toMap() {
+        return loader.get().toMap();
     }
 
     @Override

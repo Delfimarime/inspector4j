@@ -1,6 +1,6 @@
 package org.inspector4j;
 
-import org.inspector4j.api.Analysis;
+import org.inspector4j.api.InspectionResult;
 import org.inspector4j.api.Node;
 
 import java.lang.reflect.Method;
@@ -20,6 +20,6 @@ public interface Inspector {
      * @param args Arguments supplied to the method
      * @return The representation as a {@link Node}
      */
-    Analysis inspect(Method method, Object[] args);
+    InspectionResult inspect(Method method, Object[] args);
 
 }

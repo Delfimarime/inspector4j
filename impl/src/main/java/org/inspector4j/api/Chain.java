@@ -11,7 +11,7 @@ public interface Chain {
 
         Builder apply(Action action);
 
-        ChainedActionBuilder newAction();
+        Action.Builder newAction();
 
     }
 

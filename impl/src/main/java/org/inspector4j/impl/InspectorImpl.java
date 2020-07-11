@@ -39,7 +39,7 @@ public class InspectorImpl implements Inspector {
     }
 
     @Override
-    public Analysis inspect(Method method, Object[] args) {
+    public InspectionResult inspect(Method method, Object[] args) {
 
         if (method == null) {
             throw new IllegalArgumentException("Method mustn't be null ");
@@ -49,10 +49,10 @@ public class InspectorImpl implements Inspector {
             throw new IllegalArgumentException("Args mustn't be null ");
         }
 
-        Execution instance = new Execution();
+        MethodRepresentation instance = new MethodRepresentation();
         instance.setMethod(method);
         instance.setArgs(args);
-        return (Analysis) inspect(instance);
+        return (InspectionResult) inspect(instance);
     }
 
     private Chain newChain() {
@@ -62,7 +62,7 @@ public class InspectorImpl implements Inspector {
                 .next()
                     .setCondition((obj, chain) -> obj instanceof Node).setExecution((obj, chain) -> (Node) obj)
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Execution).setExecution(this::toAnalysis)
+                    .setCondition((obj, chain) -> obj instanceof MethodRepresentation).setExecution(this::toAnalysis)
                 .next()
                     .setCondition((obj, chain) -> obj instanceof Boolean).setExecution((obj, chain) -> nodeFactory.create((boolean) obj))
                 .next()
@@ -121,13 +121,13 @@ public class InspectorImpl implements Inspector {
             return nodeFactory.create();
         }
 
-        if (!(object instanceof Execution)) {
+        if (!(object instanceof MethodRepresentation)) {
             throw new IllegalArgumentException("Unsupported type " + object.getClass().getName());
         }
 
-        Execution instance = (Execution) object;
+        MethodRepresentation instance = (MethodRepresentation) object;
 
-        AnalysisImpl.Builder builder = AnalysisImpl.Builder.get();
+        InspectionResultImpl.Builder builder = InspectionResultImpl.Builder.get();
 
         for (int index = 0; index < instance.getMethod().getParameters().length; index++) {
             Parameter parameter = instance.getMethod().getParameters()[index];

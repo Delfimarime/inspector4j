@@ -134,8 +134,8 @@ public class ChainImpl implements Chain {
         }
 
         @Override
-        public ChainedActionBuilder newAction() {
-            return new ChainedActionBuilderImpl(this);
+        public Action.Builder newAction() {
+            return new DefaultActionBuilder(this);
         }
 
     }

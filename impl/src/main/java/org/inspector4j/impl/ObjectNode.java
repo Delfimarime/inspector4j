@@ -5,7 +5,7 @@ import org.inspector4j.api.Node;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 public class ObjectNode extends ContainerNode implements Node {
 
@@ -23,6 +23,17 @@ public class ObjectNode extends ContainerNode implements Node {
     @Override
     public Class<?> getType() {
         return this.type;
+    }
+
+    @Override
+    public Map<Object, Object> asMap() {
+        return toMap();
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public Map<Object, Object> toMap() {
+        return (Map<Object, Object>) Commons.unwrap(this);
     }
 
     @Override
