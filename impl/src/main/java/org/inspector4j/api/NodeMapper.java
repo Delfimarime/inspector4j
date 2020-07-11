@@ -1,17 +1,17 @@
 package org.inspector4j.api;
 
 @FunctionalInterface
-public interface Chain {
+public interface NodeMapper {
 
     Node handle(Object object);
 
     interface Builder {
 
-        Chain build();
+        NodeMapper build();
 
         Builder apply(Action action);
 
-        ChainedActionBuilder newAction();
+        Action.Builder newAction();
 
     }
 

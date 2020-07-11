@@ -1,8 +1,8 @@
 package org.inspector4j.impl;
 
 import org.inspector4j.Inspector;
-import org.inspector4j.api.Analysis;
-import org.inspector4j.api.Inspect4J;
+import org.inspector4j.api.InspectionResult;
+import org.inspector4j.api.Inspector4J;
 import org.inspector4j.api.Node;
 import org.inspector4j.impl.model.Person;
 import org.junit.Assert;
@@ -15,14 +15,14 @@ public class InspectorTests {
 
     @Test
     public void single() {
-        Node node = Inspect4J.get().inspect(getSingle());
+        Node node = Inspector4J.get().inspect(getSingle());
         Assert.assertEquals(4, node.size());
     }
 
     @Test
     public void withChildren() {
         Object object = getFamilyFather();
-        Node node = Inspect4J.get().inspect(object);
+        Node node = Inspector4J.get().inspect(object);
         Assert.assertEquals(node.size(), 4);
 
         System.out.println(node.get("children"));
@@ -31,21 +31,15 @@ public class InspectorTests {
 
     @Test
     public void run() throws Exception {
-        Inspector instance = Inspect4J.get();
-        Method objectConstructor = Factory.class.getMethod("create", String.class, Type.class);
-        Method personConstructor = Factory.class.getMethod("create", Person.class, Type.class);
+        Inspector instance = Inspector4J.get();
+        Method method = Factory.class.getMethod("create", Person.class, Type.class);
 
-        // System.out.println(instance.inspect(objectConstructor, new Object[]{"Necklace", Type.GOLD}));
-        // System.out.println(instance.inspect(personConstructor, new Object[]{getFamilyFather(), Type.WOOD}));
-        Analysis node = instance.inspect(personConstructor, new Object[]{getFriendly(), Type.WOOD});
+        InspectionResult node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD});
 
-        System.out.println(node.get("person").get("friends").get(0).get("name"));
-
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name"));
-
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name"));
-
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name"));
+        System.out.println(node.get("person").get("friends").get(0).toMap());
+        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("value")));
+        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("friends")));
+        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("friends")).get(0));
 
     }
 
@@ -61,9 +55,13 @@ public class InspectorTests {
         return Person.builder().age(30).gender(null).name("John").children(children).build();
     }
 
+    /**
+     * Creates a male {@link Person} which is friend of female {@link Person} where both are friends of each other
+     * @return male {@link Person}
+     */
     private Person getFriendly() {
-        Person adam = Person.builder().age(30).gender(null).name("Adam").children(null).build();
-        Person lilith = Person.builder().age(29).gender(null).name("Lilith").children(null).build();
+        Person adam = Person.builder().age(30).gender('M').name("Adam").children(null).build();
+        Person lilith = Person.builder().age(29).gender('F').name("Lilith").children(null).build();
 
         lilith.setFriends(new Person[]{adam});
         adam.setFriends(new Person[]{lilith});

@@ -6,15 +6,19 @@ import java.util.function.BiPredicate;
 @FunctionalInterface
 public interface Action {
 
-    Node handle(Object object, Chain chain);
+    Node handle(Object object, NodeMapper mapper);
 
-    interface Builder {
+    interface Builder  {
 
-        Builder setCondition(BiPredicate<Object, Chain> condition);
+        Builder setCondition(BiPredicate<Object, NodeMapper> condition);
 
-        Builder setExecution(BiFunction<Object, Chain, Node> execution);
+        Builder setExecution(BiFunction<Object, NodeMapper, Node> execution);
+
+        Builder next();
 
         Action build();
+
+        NodeMapper.Builder apply();
 
     }
 

@@ -1,26 +1,30 @@
 package org.inspector4j.impl;
 
-import org.inspector4j.api.*;
+import org.inspector4j.api.Action;
+import org.inspector4j.api.InspectionException;
+import org.inspector4j.api.Node;
+import org.inspector4j.api.NodeMapper;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class ChainImpl implements Chain {
+public class NodeMapperImpl implements NodeMapper {
 
     private int index;
     private Object bean;
-    private boolean isSubContext;
+    private boolean isFirst;
 
     private final List<Action> actions;
     private final Map<String, Node> beanCache;
     private final Map<String, Node> proxyCache;
 
-    public ChainImpl(List<Action> actions) {
+    public NodeMapperImpl(List<Action> actions) {
         this.initialize();
-        this.isSubContext = false;
+        this.isFirst = false;
         this.actions = actions;
         this.beanCache = new HashMap<>();
         this.proxyCache = new HashMap<>();
@@ -39,10 +43,10 @@ public class ChainImpl implements Chain {
                 return this.proxyCache.get(key);
             }
 
-            this.isSubContext = this.bean != null && !this.bean.equals(object);
+            this.isFirst = this.bean != null && !this.bean.equals(object);
 
-            if (isSubContext) {
-                return forSubContext(object);
+            if (isFirst) {
+                return asFirst(object);
             }
 
             this.bean = object;
@@ -51,7 +55,7 @@ public class ChainImpl implements Chain {
                 this.proxyCache.remove(keyOf(this.bean));
             }
 
-            return this.execute(object, () -> this.actions.get(this.index++).handle(object, this));
+            return this.intercept(object, () -> this.actions.get(this.index++).handle(object, this));
         } catch (IndexOutOfBoundsException ex) {
             throw new InspectionException("No Action to handle the node transformation", ex);
         }
@@ -64,17 +68,17 @@ public class ChainImpl implements Chain {
         return object.getClass() + "@" + object.hashCode();
     }
 
-    private Node referenceOf(String key) {
-        return new ReferenceNode(() -> beanCache.get(key));
+    private Node instanceOf(String key) {
+        return (Node) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{Node.class}, (obj, method, args) -> method.invoke(beanCache.get(key), args));
     }
 
-    private Node forSubContext(Object object) {
+    private Node asFirst(Object object) {
         int index = this.index;
         Object bean = this.bean;
-        String bKey = bean == null ? null : keyOf(bean);
+        String key = bean == null ? null : keyOf(bean);
 
-        if (bKey != null && !proxyCache.containsKey(bKey)) {
-            proxyCache.put(bKey, referenceOf(bKey));
+        if (key != null && !proxyCache.containsKey(key)) {
+            proxyCache.put(key, instanceOf(key));
         }
 
         initialize();
@@ -90,10 +94,10 @@ public class ChainImpl implements Chain {
     private void initialize(Object object, int index, boolean isSubContext) {
         this.index = index;
         this.bean = object;
-        this.isSubContext = isSubContext;
+        this.isFirst = isSubContext;
     }
 
-    private Node execute(Object object, Supplier<Node> factory) {
+    private Node intercept(Object object, Supplier<Node> factory) {
 
         String keyOf = keyOf(object);
 
@@ -106,7 +110,7 @@ public class ChainImpl implements Chain {
         return node;
     }
 
-    public static class Builder implements Chain.Builder {
+    public static class Builder implements NodeMapper.Builder {
 
         private final List<Action> sequence;
 
@@ -120,13 +124,13 @@ public class ChainImpl implements Chain {
 
 
         @Override
-        public Chain build() {
-            return new ChainImpl(sequence);
+        public NodeMapper build() {
+            return new NodeMapperImpl(sequence);
         }
 
 
         @Override
-        public Chain.Builder apply(Action action) {
+        public NodeMapper.Builder apply(Action action) {
             if (action != null) {
                 sequence.add(action);
             }
@@ -134,8 +138,8 @@ public class ChainImpl implements Chain {
         }
 
         @Override
-        public ChainedActionBuilder newAction() {
-            return new ChainedActionBuilderImpl(this);
+        public Action.Builder newAction() {
+            return new DefaultActionBuilder(this);
         }
 
     }

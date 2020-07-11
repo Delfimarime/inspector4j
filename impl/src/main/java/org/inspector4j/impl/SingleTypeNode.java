@@ -1,7 +1,5 @@
 package org.inspector4j.impl;
 
-import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
 
 import java.lang.reflect.Field;
@@ -12,39 +10,39 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
 
-public class SequenceNode implements Node {
-
-    private final Node[] container;
-    private final Class<?> containerType;
-
-    public SequenceNode(Class<?> containerType, Node[] container) {
-        this.container = container;
-        this.containerType = containerType;
-    }
+public abstract class SingleTypeNode implements Node {
 
     @Override
     public Object[] keys() {
-        Object[] keys = new Object[size()];
-
-        if (keys.length > 0) {
-            for (int index = 0; index < keys.length; index++) {
-                keys[index] = index;
-            }
-        }
-
-        return keys;
-    }
-
-    @Override
-    public Node get(int index) {
-        return container[index];
+       throw new UnsupportedOperationException();
     }
 
     @Override
     public Node get(Node key) {
-        return Optional.ofNullable(key).filter(Node::isInteger).map(Node::asInt).map(this::get).orElse(null);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node get(Class<?> key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node get(Field key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node get(Method key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node get(int key) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -123,84 +121,38 @@ public class SequenceNode implements Node {
     }
 
     @Override
-    public Node get(Class<?> key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Node get(Field key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Node get(Method key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Node get(Object key) {
-        if (key instanceof Node) {
-            return get((Node) key);
-        } else if (key instanceof Integer) {
-            return get((int) key);
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isNull() {
+    public boolean isClass() {
         return false;
     }
 
     @Override
-    public boolean isArray() {
-        return TypeUtils.isArrayType(containerType);
-    }
-
-    @Override
-    public boolean isDouble() {
+    public boolean isMethod() {
         return false;
     }
 
     @Override
-    public boolean isBoolean() {
+    public boolean isField() {
         return false;
-    }
-
-    @Override
-    public boolean isLong() {
-        return false;
-    }
-
-    @Override
-    public boolean isText() {
-        return false;
-    }
-
-    @Override
-    public boolean isInteger() {
-        return false;
-    }
-
-    @Override
-    public boolean isContainer() {
-        return true;
     }
 
     @Override
     public boolean isSingular() {
-        return false;
-    }
-
-    @Override
-    public boolean isSequence() {
         return Boolean.TRUE;
     }
 
     @Override
+    public boolean isSequence() {
+        return false;
+    }
+
+    @Override
     public boolean isCollection() {
-        return ClassUtils.isAssignable(containerType, Collection.class);
+        return false;
     }
 
     @Override
@@ -264,28 +216,8 @@ public class SequenceNode implements Node {
     }
 
     @Override
-    public boolean isClass() {
-        return false;
-    }
-
-    @Override
-    public boolean isMethod() {
-        return false;
-    }
-
-    @Override
-    public boolean isField() {
-        return false;
-    }
-
-    @Override
-    public int size() {
-        return container.length;
-    }
-
-    @Override
     public double asDouble() {
-        throw new UnsupportedOperationException();
+       throw new UnsupportedOperationException();
     }
 
     @Override
@@ -349,6 +281,54 @@ public class SequenceNode implements Node {
     }
 
     @Override
+    public abstract Class<?> getType();
+
+    @Override
+    public boolean isNull() {
+        return false;
+    }
+
+    @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    @Override
+    public boolean isDouble() {
+        return false;
+    }
+
+    @Override
+    public boolean isInteger() {
+        return false;
+    }
+
+    @Override
+    public boolean isLong() {
+        return false;
+    }
+
+    @Override
+    public boolean isText() {
+        return false;
+    }
+
+    @Override
+    public boolean isContainer() {
+        return false;
+    }
+
+    @Override
+    public boolean isBoolean() {
+        return false;
+    }
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
     public String asText() {
         throw new UnsupportedOperationException();
     }
@@ -384,21 +364,13 @@ public class SequenceNode implements Node {
     }
 
     @Override
-    public Class<?> getType() {
-        return containerType;
+    public Map<Object, Object> asMap() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SequenceNode that = (SequenceNode) o;
-        return Arrays.equals(container, that.container);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(container);
+    public Map<Object, Object> toMap() {
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -39,7 +39,7 @@ public class InspectorImpl implements Inspector {
     }
 
     @Override
-    public Analysis inspect(Method method, Object[] args) {
+    public InspectionResult inspect(Method method, Object[] args) {
 
         if (method == null) {
             throw new IllegalArgumentException("Method mustn't be null ");
@@ -49,20 +49,20 @@ public class InspectorImpl implements Inspector {
             throw new IllegalArgumentException("Args mustn't be null ");
         }
 
-        Execution instance = new Execution();
+        MethodRepresentation instance = new MethodRepresentation();
         instance.setMethod(method);
         instance.setArgs(args);
-        return (Analysis) inspect(instance);
+        return (InspectionResult) inspect(instance);
     }
 
-    private Chain newChain() {
-        return ChainImpl.Builder.get()
+    private NodeMapper newChain() {
+        return NodeMapperImpl.Builder.get()
                 .newAction()
                     .setCondition((obj, chain) -> obj == null).setExecution((obj, chain) -> nodeFactory.create())
                 .next()
                     .setCondition((obj, chain) -> obj instanceof Node).setExecution((obj, chain) -> (Node) obj)
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Execution).setExecution(this::toAnalysis)
+                    .setCondition((obj, chain) -> obj instanceof MethodRepresentation).setExecution(this::toAnalysis)
                 .next()
                     .setCondition((obj, chain) -> obj instanceof Boolean).setExecution((obj, chain) -> nodeFactory.create((boolean) obj))
                 .next()
@@ -115,49 +115,49 @@ public class InspectorImpl implements Inspector {
                     .build();
     }
 
-    private Node toAnalysis(Object object, Chain chain) {
+    private Node toAnalysis(Object object, NodeMapper mapper) {
 
         if (object == null) {
             return nodeFactory.create();
         }
 
-        if (!(object instanceof Execution)) {
+        if (!(object instanceof MethodRepresentation)) {
             throw new IllegalArgumentException("Unsupported type " + object.getClass().getName());
         }
 
-        Execution instance = (Execution) object;
+        MethodRepresentation instance = (MethodRepresentation) object;
 
-        AnalysisImpl.Builder builder = AnalysisImpl.Builder.get();
+        InspectionResultImpl.Builder builder = InspectionResultImpl.Builder.get();
 
         for (int index = 0; index < instance.getMethod().getParameters().length; index++) {
             Parameter parameter = instance.getMethod().getParameters()[index];
-            builder.set(parameter.getName(), chain.handle(instance.getArgs()[index]));
+            builder.set(parameter.getName(), mapper.handle(instance.getArgs()[index]));
         }
 
         return builder.setMethod(instance.getMethod()).build();
     }
 
-    private Node toMap(Object object, Chain chain) {
+    private Node toMap(Object object, NodeMapper mapper) {
         Map<Node, Node> container = ((Map<?, ?>) object).entrySet().stream()
-                .collect(Collectors.toMap(entry -> chain.handle(entry.getKey()), entry -> chain.handle(entry.getValue())));
-        return ObjectNode.Builder.get().setAll(container).build();
+                .collect(Collectors.toMap(entry -> mapper.handle(entry.getKey()), entry -> mapper.handle(entry.getValue())));
+        return NodeImpl.Builder.get().setAll(container).build();
     }
 
-    private Node toObject(Object object, Chain chain) {
+    private Node toObject(Object object, NodeMapper mapper) {
         try {
 
             if (object instanceof Collection) {
-                return toCollection((Collection<?>) object, chain);
+                return toCollection((Collection<?>) object, mapper);
             } else if (object.getClass().isArray()) {
-                return toArray(object, chain);
+                return toArray(object, mapper);
             } else if (Commons.isKnownType(object.getClass())) {
-                return toBasic(object, chain);
+                return toBasic(object, mapper);
             } else {
 
                 Node.Builder builder = nodeFactory.newBuilder();
 
                 for (Field field : FieldUtils.getAllFieldsList(object.getClass())) {
-                    builder.setNode(field.getName(), chain.handle(FieldUtils.readField(field, object, true)));
+                    builder.setNode(field.getName(), mapper.handle(FieldUtils.readField(field, object, true)));
                 }
 
                 return builder.setType(object.getClass()).build();
@@ -167,7 +167,7 @@ public class InspectorImpl implements Inspector {
         }
     }
 
-    private Node toArray(Object object, Chain chain) {
+    private Node toArray(Object object, NodeMapper mapper) {
         Type type = TypeUtils.getArrayComponentType(object.getClass());
 
         if (type.equals(int.class) || type.equals(Integer.class)) {
@@ -205,22 +205,22 @@ public class InspectorImpl implements Inspector {
         } else if (type.equals(Field.class)) {
             return nodeFactory.create((Field[]) object);
         } else {
-            return new SequenceNode(object.getClass(), stream(object).map(chain::handle).toArray(Node[]::new));
+            return new IterableNode(object.getClass(), stream(object).map(mapper::handle).toArray(Node[]::new));
         }
     }
 
-    private Node toCollection(Collection<?> object, Chain chain) {
+    private Node toCollection(Collection<?> object, NodeMapper mapper) {
         boolean isBasic = object.stream().allMatch(each -> Commons.isKnownType(each.getClass()));
 
         if (!isBasic) {
-            return new SequenceNode(object.getClass(), object.stream().map(chain::handle).toArray(Node[]::new));
+            return new IterableNode(object.getClass(), object.stream().map(mapper::handle).toArray(Node[]::new));
         }
 
         return nodeFactory.create(object);
     }
 
     @SuppressWarnings({"rawtypes"})
-    private Node toBasic(Object object, Chain chain) {
+    private Node toBasic(Object object, NodeMapper mapper) {
         if (object instanceof Integer) {
             return nodeFactory.create((int) object);
         } else if (object instanceof Double) {
@@ -256,7 +256,7 @@ public class InspectorImpl implements Inspector {
         } else if (object instanceof Field) {
             return nodeFactory.create((Field) object);
         } else {
-            return new SequenceNode(object.getClass(), stream(object).map(chain::handle).toArray(Node[]::new));
+            return new IterableNode(object.getClass(), stream(object).map(mapper::handle).toArray(Node[]::new));
         }
     }
 

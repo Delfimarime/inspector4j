@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Tree Node representation of a Java Object
@@ -601,10 +602,25 @@ public interface Node {
      * Returns the node representation as {@link Field}
      * In case the representation cannot be converted to {@link Field} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isField()} is TRUE
-     *
      * @return @{@link Field} representation
      */
     Field asField();
+
+    /**
+     * Returns the node representation as {@link Map}
+     * In case the representation cannot be converted to {@link Map} an {@link UnsupportedOperationException} is thrown
+     * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isContainer()} is TRUE
+     * @return @{@link Map} representation
+     */
+    Map<Object,Object> asMap();
+
+    /**
+     * Returns the node representation as {@link Map}
+     * In case the representation cannot be converted to {@link Map} an {@link UnsupportedOperationException} is thrown
+     * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isContainer()} is TRUE
+     * @return @{@link Map} representation
+     */
+    Map<Object,Object> toMap();
 
 
     /**

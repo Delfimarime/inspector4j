@@ -38,7 +38,7 @@ public class NodeBuilderImpl implements Node.Builder {
     @Override
     public Node build() {
         Map<Node, Node> map = container.entrySet().stream().collect(Collectors.toMap(x -> (Node) factory.create(x.getKey()), x -> (Node) x.getValue()));
-        return ObjectNode.Builder.get().setType(type).setAll(map).build();
+        return NodeImpl.Builder.get().setType(type).setAll(map).build();
     }
 
     @Override
