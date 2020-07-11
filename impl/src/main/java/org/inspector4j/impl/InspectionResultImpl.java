@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class InspectionResultImpl extends ContainerNode implements InspectionResult {
+public class InspectionResultImpl extends ObjectTypeNode implements InspectionResult {
 
     private Method method;
     private Map<Node, Node> map;
@@ -74,7 +74,7 @@ public class InspectionResultImpl extends ContainerNode implements InspectionRes
 
         public Builder set(String name, Node node) {
             if (name != null && node != null) {
-                set(new ValueNode(name), node);
+                set(new BasicTypeNode(name), node);
             }
             return this;
         }

@@ -49,36 +49,21 @@ public class Commons {
         }
     }
 
-    public static Object unwrap(Object x) {
-        if (!(x instanceof Node)) {
-            return x;
+    public static Object unwrap(Object instance) {
+        if (!(instance instanceof Node)) {
+            return instance;
         } else {
-            return unwrap((Node) x);
+            return unwrap((Node) instance);
         }
     }
 
-    public static Object unwrap(Node node) {
-        if (node == null || node.isNull()) {
-            return null;
-        } else if (node.isArray()) {
-            return Arrays.stream(node.keys()).map(Commons::unwrap).map(node::get).map(Commons::unwrap).toArray(Object[]::new);
-        } else if (node.isCollection()) {
-            return Arrays.stream(node.keys()).map(Commons::unwrap).collect(Collectors.toList());
-        } else if (node.isContainer()) {
-            return asMap(node);
-        } else if (node.isSingular()) {
-            return extract(node);
-        } else {
-            throw new UnsupportedOperationException();
-        }
-    }
+    public static Object unwrap(Node instance) {
+        Map<Node, Object> cache = new HashMap<>();
+        Object object = unwrap(instance, cache);
 
-    private static Object asMap(Node node) {
-        Map<Object, Object> map = new HashMap<>();
-        for (Object key : node.keys()) {
-            map.put(Commons.unwrap(key), Commons.unwrap(node.get(key)));
-        }
-        return map;
+        cache.clear();
+
+        return object;
     }
 
     private static Object extract(Node node) {
@@ -130,5 +115,50 @@ public class Commons {
             throw new UnsupportedOperationException("Node doesn't support toMap");
         }
     }
+
+    private static Object unwrap(Object object, Map<Node, Object> cache) {
+        return object instanceof Node ? unwrap((Node) object, cache) : object;
+    }
+
+    private static Object unwrap(Node node, Map<Node, Object> cache) {
+
+        if (node == null || node.isNull()) {
+            return null;
+        } else if (cache.containsKey(node)) {
+            return cache.get(node);
+        }
+
+        Object object;
+
+        if (node.isArray()) {
+            object = Arrays.stream(node.keys()).map(each -> Commons.unwrap(each, cache)).map(node::get).map(each -> Commons.unwrap(each, cache)).toArray(Object[]::new);
+        } else if (node.isCollection()) {
+            object = Arrays.stream(node.keys()).map(each -> Commons.unwrap(each, cache)).collect(Collectors.toList());
+        } else if (node.isContainer()) {
+            object = asMap(node, cache);
+        } else if (node.isSingular()) {
+            object = extract(node);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+        if (object != null && !cache.containsKey(node)) {
+            cache.put(node, object);
+        }
+
+        return object;
+    }
+
+    private static Object asMap(Node node, Map<Node, Object> cache) {
+        final Map<Object, Object> map = new HashMap<>();
+        cache.put(node, map);
+
+        for (Object key : node.keys()) {
+            map.put(Commons.unwrap(key, cache), Commons.unwrap(node.get(key), cache));
+        }
+
+        return map;
+    }
+
 
 }

@@ -92,7 +92,9 @@ public class Example {
         Inspector instance = Inspector4J.get(); // GETS INSPECTOR INSTANCE WHICH IS USED TO INSPECT 
         Method method = Factory.class.getMethod("create", Person.class, Type.class); // METHOD TO BE INSPECT FROM CLASS Factory
         Analysis node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD}); // INSPECTS THE METHOD WITH THE ARGS PASSED ON THE METHOD AND PRODUCES AN ANALYSIS WHICH REPRESENTS THE INSPECTION 
-        
+                
+        System.out.println(node.get("person").asMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
+        System.out.println(node.get("person").toMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
         System.out.println(node.get("person").get("value").get(0).asText()); // PICK PARAMETER WITH NAME person , THEN PICK ATTRIBUTE value WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 FROM THE ATTRIBUTE AND LASTLY LASTLY RETURN THE ATTRIBUTE
         System.out.println(node.get("person").get("friends").get(0).get("name").asText()); // PICK PARAMETER WITH NAME person ( WHICH IS Adam ), THEN PICK ATTRIBUTE friends WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 (WHICH IS PERSON WITH NAME Lilith ) FROM THE ATTRIBUTE , THEN PICK name ATTRIBUTE FROM LAST ATTRIBUTE (PERSON with name Lilith)  AND LASTLY RETURN THE ATTRIBUTE AS TEXT
         System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name").asText());

@@ -12,7 +12,6 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ReferenceNode implements Node {

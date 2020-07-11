@@ -1,5 +1,7 @@
 package org.inspector4j.impl;
 
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
 
 import java.lang.reflect.Field;
@@ -10,39 +12,40 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public abstract class SingularNode implements Node {
+public class IterableNode implements Node {
+
+    private final Node[] container;
+    private final Class<?> containerType;
+
+    public IterableNode(Class<?> containerType, Node[] container) {
+        this.container = container;
+        this.containerType = containerType;
+    }
 
     @Override
     public Object[] keys() {
-       throw new UnsupportedOperationException();
+        Object[] keys = new Object[size()];
+
+        if (keys.length > 0) {
+            for (int index = 0; index < keys.length; index++) {
+                keys[index] = index;
+            }
+        }
+
+        return keys;
+    }
+
+    @Override
+    public Node get(int index) {
+        return container[index];
     }
 
     @Override
     public Node get(Node key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Node get(Class<?> key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Node get(Field key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Node get(Method key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Node get(int key) {
-        throw new UnsupportedOperationException();
+        return Optional.ofNullable(key).filter(Node::isInteger).map(Node::asInt).map(this::get).orElse(null);
     }
 
     @Override
@@ -121,38 +124,84 @@ public abstract class SingularNode implements Node {
     }
 
     @Override
-    public Node get(Object key) {
+    public Node get(Class<?> key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isClass() {
+    public Node get(Field key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node get(Method key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node get(Object key) {
+        if (key instanceof Node) {
+            return get((Node) key);
+        } else if (key instanceof Integer) {
+            return get((int) key);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public boolean isNull() {
         return false;
     }
 
     @Override
-    public boolean isMethod() {
+    public boolean isArray() {
+        return TypeUtils.isArrayType(containerType);
+    }
+
+    @Override
+    public boolean isDouble() {
         return false;
     }
 
     @Override
-    public boolean isField() {
+    public boolean isBoolean() {
+        return false;
+    }
+
+    @Override
+    public boolean isLong() {
+        return false;
+    }
+
+    @Override
+    public boolean isText() {
+        return false;
+    }
+
+    @Override
+    public boolean isInteger() {
+        return false;
+    }
+
+    @Override
+    public boolean isContainer() {
         return false;
     }
 
     @Override
     public boolean isSingular() {
-        return Boolean.TRUE;
+        return false;
     }
 
     @Override
     public boolean isSequence() {
-        return false;
+        return Boolean.TRUE;
     }
 
     @Override
     public boolean isCollection() {
-        return false;
+        return ClassUtils.isAssignable(containerType, Collection.class);
     }
 
     @Override
@@ -216,8 +265,28 @@ public abstract class SingularNode implements Node {
     }
 
     @Override
+    public boolean isClass() {
+        return false;
+    }
+
+    @Override
+    public boolean isMethod() {
+        return false;
+    }
+
+    @Override
+    public boolean isField() {
+        return false;
+    }
+
+    @Override
+    public int size() {
+        return container.length;
+    }
+
+    @Override
     public double asDouble() {
-       throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -281,54 +350,6 @@ public abstract class SingularNode implements Node {
     }
 
     @Override
-    public abstract Class<?> getType();
-
-    @Override
-    public boolean isNull() {
-        return false;
-    }
-
-    @Override
-    public boolean isArray() {
-        return false;
-    }
-
-    @Override
-    public boolean isDouble() {
-        return false;
-    }
-
-    @Override
-    public boolean isInteger() {
-        return false;
-    }
-
-    @Override
-    public boolean isLong() {
-        return false;
-    }
-
-    @Override
-    public boolean isText() {
-        return false;
-    }
-
-    @Override
-    public boolean isContainer() {
-        return false;
-    }
-
-    @Override
-    public boolean isBoolean() {
-        return false;
-    }
-
-    @Override
-    public int size() {
-        return 0;
-    }
-
-    @Override
     public String asText() {
         throw new UnsupportedOperationException();
     }
@@ -365,11 +386,17 @@ public abstract class SingularNode implements Node {
 
     @Override
     public Map<Object, Object> asMap() {
-        throw new UnsupportedOperationException();
+        return toMap();
     }
 
     @Override
     public Map<Object, Object> toMap() {
-        throw new UnsupportedOperationException();
+        return Arrays.stream(keys()).collect(Collectors.toMap(Commons::unwrap, index -> Commons.unwrap(container[(int) index])));
     }
+
+    @Override
+    public Class<?> getType() {
+        return containerType;
+    }
+
 }

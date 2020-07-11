@@ -18,10 +18,10 @@ import java.util.Date;
 
 public class NodeFactoryImpl implements NodeFactory {
 
-    private final NullNode emptyNode;
+    private final UndefinedNode emptyNode;
 
     public NodeFactoryImpl() {
-        this.emptyNode = new NullNode();
+        this.emptyNode = new UndefinedNode();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class NodeFactoryImpl implements NodeFactory {
 
     @Override
     public Node nullOf(Class<?> type) {
-        return new NullNode(type);
+        return new UndefinedNode(type);
     }
 
     @Override
@@ -318,7 +318,7 @@ public class NodeFactoryImpl implements NodeFactory {
 
         Node[] container = value.stream().map(each -> asValue(each.getClass(), each)).toArray(Node[]::new);
 
-        return new SequenceNode(value.getClass(), container);
+        return new IterableNode(value.getClass(), container);
     }
 
     @Override
@@ -331,7 +331,7 @@ public class NodeFactoryImpl implements NodeFactory {
         if (value == null) {
             return type == null ? create() : create(type);
         } else {
-            return new ValueNode(value);
+            return new BasicTypeNode(value);
         }
     }
 
@@ -340,7 +340,7 @@ public class NodeFactoryImpl implements NodeFactory {
             return type == null ? create() : create(type);
         } else {
             Node[] container = Arrays.stream(value).map(each -> asValue(each.getClass(), each)).toArray(Node[]::new);
-            return new SequenceNode(type, container);
+            return new IterableNode(type, container);
         }
     }
 
