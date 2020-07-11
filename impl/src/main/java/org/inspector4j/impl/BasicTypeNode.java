@@ -11,11 +11,11 @@ import java.time.*;
 import java.util.Date;
 import java.util.Objects;
 
-public class ValueNode extends SingularNode implements Node {
+public class BasicTypeNode extends SingleTypeNode implements Node {
 
     private final Object value;
 
-    public ValueNode(Object value) {
+    public BasicTypeNode(Object value) {
         this.value = value;
     }
 
@@ -378,7 +378,7 @@ public class ValueNode extends SingularNode implements Node {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ValueNode valueNode = (ValueNode) o;
+        BasicTypeNode valueNode = (BasicTypeNode) o;
         return Objects.equals(value, valueNode.value);
     }
 

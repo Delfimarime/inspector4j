@@ -5,14 +5,13 @@ import org.inspector4j.api.Node;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class ObjectNode extends ContainerNode implements Node {
+public class NodeImpl extends ObjectTypeNode implements Node {
 
     private Class<?> type;
     private Map<Node, Node> map;
 
-    private ObjectNode() {
+    private NodeImpl() {
     }
 
     @Override
@@ -34,19 +33,6 @@ public class ObjectNode extends ContainerNode implements Node {
     @SuppressWarnings({"unchecked"})
     public Map<Object, Object> toMap() {
         return (Map<Object, Object>) Commons.unwrap(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ObjectNode that = (ObjectNode) o;
-        return Objects.equals(map, that.map);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(map);
     }
 
     public static class Builder {
@@ -71,7 +57,7 @@ public class ObjectNode extends ContainerNode implements Node {
 
         public Builder set(String name, Node node) {
             if (name != null && node != null) {
-                set(new ValueNode(name), node);
+                set(new BasicTypeNode(name), node);
             }
             return this;
         }
@@ -91,7 +77,7 @@ public class ObjectNode extends ContainerNode implements Node {
         }
 
         public Node build() {
-            ObjectNode instance = new ObjectNode();
+            NodeImpl instance = new NodeImpl();
 
             if (type == null) {
                 throw new IllegalArgumentException("Type mustn't be null");

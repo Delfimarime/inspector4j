@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-public abstract class ContainerNode implements Node {
+public abstract class ObjectTypeNode implements Node {
 
     protected abstract Map<Node,Node>getMap();
 
@@ -408,24 +408,6 @@ public abstract class ContainerNode implements Node {
 
     @Override
     public abstract Class<?> getType();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ContainerNode that = (ContainerNode) o;
-        return Objects.equals(getMap(), that.getMap());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getMap());
-    }
-
-    @Override
-    public String toString() {
-        return "{ [" + getMap().entrySet().stream().map(each -> each.getKey() + " = " + each.getValue()).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse("") + "]}";
-    }
 
     private Node find(BiPredicate<Node, Node> condition) {
         return getMap().entrySet().stream().filter(each -> condition.test(each.getKey(), each.getValue())).map(Map.Entry::getValue).findFirst().orElse(null);

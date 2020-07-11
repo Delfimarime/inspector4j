@@ -2,15 +2,15 @@ package org.inspector4j.impl;
 
 import org.inspector4j.api.Node;
 
-public class NullNode extends SingularNode implements Node {
+public class UndefinedNode extends SingleTypeNode implements Node {
 
     private final Class<?> rootType;
 
-    public NullNode(){
+    public UndefinedNode(){
         this(Object.class);
     }
 
-    public NullNode(Class<?> objectClass) {
+    public UndefinedNode(Class<?> objectClass) {
         this.rootType = objectClass;
     }
 

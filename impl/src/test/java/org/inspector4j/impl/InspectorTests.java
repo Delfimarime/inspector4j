@@ -32,26 +32,15 @@ public class InspectorTests {
     @Test
     public void run() throws Exception {
         Inspector instance = Inspector4J.get();
-        Method constructor = Factory.class.getMethod("create", Person.class, Type.class);
+        Method method = Factory.class.getMethod("create", Person.class, Type.class);
 
-        // System.out.println(instance.inspect(objectConstructor, new Object[]{"Necklace", Type.GOLD}));
-        // System.out.println(instance.inspect(personConstructor, new Object[]{getFamilyFather(), Type.WOOD}));
-        InspectionResult node = instance.inspect(constructor, new Object[]{getFriendly(), Type.WOOD});
+        InspectionResult node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD});
 
-        System.out.println(node.get("person").toMap());
+        System.out.println(node.get("person").get("friends").get(0).toMap());
+        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("value")));
+        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("friends")));
         System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("friends")).get(0));
 
-       /*
-        System.out.println(node.get("person").get("value").get(0).asText());
-
-        System.out.println(node.get("person").get("friends").get(0).get("name").asText());
-
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name").asText());
-
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
-
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
-*/
     }
 
     private Person getSingle() {
