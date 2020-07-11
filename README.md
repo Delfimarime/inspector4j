@@ -97,6 +97,7 @@ public class Example {
         System.out.println(node.get("person").toMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
         System.out.println(node.get("person").get("value").get(0).asText()); // PICK PARAMETER WITH NAME person , THEN PICK ATTRIBUTE value WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 FROM THE ATTRIBUTE AND LASTLY LASTLY RETURN THE ATTRIBUTE
         System.out.println(node.get("person").get("friends").get(0).get("name").asText()); // PICK PARAMETER WITH NAME person ( WHICH IS Adam ), THEN PICK ATTRIBUTE friends WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 (WHICH IS PERSON WITH NAME Lilith ) FROM THE ATTRIBUTE , THEN PICK name ATTRIBUTE FROM LAST ATTRIBUTE (PERSON with name Lilith)  AND LASTLY RETURN THE ATTRIBUTE AS TEXT
+        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).asMap());
         System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name").asText());
         System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
         System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
@@ -117,12 +118,18 @@ public class Example {
 }
 ```
 The above example should create a Node that represents a ***Person*** object with ***name*** Adam with 30 as ***age*** and its friends with a ***Person*** object with ***name*** Lilith and age 29 and that is friend with adam.
- ``` Console
+ ```
+{gender=M, children=null, name=Adam, value=[Ljava.lang.Object;@50675690, friends=[Ljava.lang.Object;@31b7dea0, age=30}
+{gender=M, children=null, name=Adam, value=[Ljava.lang.Object;@3ac42916, friends=[Ljava.lang.Object;@47d384ee, age=30}
 org
 Lilith
+{gender=F, children=null, name=Lilith, value=[Ljava.lang.Object;@2d6a9952, friends=[Ljava.lang.Object;@22a71081, age=29}
 Adam
 Lilith
 Adam
+
+Process finished with exit code 0
+
 ```
 
 ## Contributing

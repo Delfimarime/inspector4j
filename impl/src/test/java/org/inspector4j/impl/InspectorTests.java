@@ -36,10 +36,14 @@ public class InspectorTests {
 
         InspectionResult node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD});
 
-        System.out.println(node.get("person").get("friends").get(0).toMap());
-        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("value")));
-        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("friends")));
-        System.out.println(Arrays.asList((Object[]) node.get("person").get("friends").get(0).toMap().get("friends")).get(0));
+        System.out.println(node.get("person").asMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
+        System.out.println(node.get("person").toMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
+        System.out.println(node.get("person").get("value").get(0).asText()); // PICK PARAMETER WITH NAME person , THEN PICK ATTRIBUTE value WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 FROM THE ATTRIBUTE AND LASTLY LASTLY RETURN THE ATTRIBUTE
+        System.out.println(node.get("person").get("friends").get(0).get("name").asText()); // PICK PARAMETER WITH NAME person ( WHICH IS Adam ), THEN PICK ATTRIBUTE friends WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 (WHICH IS PERSON WITH NAME Lilith ) FROM THE ATTRIBUTE , THEN PICK name ATTRIBUTE FROM LAST ATTRIBUTE (PERSON with name Lilith)  AND LASTLY RETURN THE ATTRIBUTE AS TEXT
+        System.out.println(node.get("person").get("friends").get(0).asMap());
+        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name").asText());
+        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
+        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
 
     }
 
