@@ -51,7 +51,7 @@ public class DefaultActionBuilder implements Action.Builder {
             if (condition != null && condition.test(object, chain)) {
                 return execution.apply(object, chain);
             } else {
-                return chain.handle(object);
+                return chain.map(object);
             }
         });
     }

@@ -3,7 +3,7 @@ package org.inspector4j.api;
 @FunctionalInterface
 public interface NodeMapper {
 
-    Node handle(Object object);
+    Node map(Object object);
 
     interface Builder {
 

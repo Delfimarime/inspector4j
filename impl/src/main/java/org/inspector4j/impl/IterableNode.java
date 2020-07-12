@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -392,6 +393,16 @@ public class IterableNode implements Node {
     @Override
     public Map<Object, Object> toMap() {
         return Arrays.stream(keys()).collect(Collectors.toMap(Commons::unwrap, index -> Commons.unwrap(container[(int) index])));
+    }
+
+    @Override
+    public Object[] toArray() {
+        return asArray();
+    }
+
+    @Override
+    public Object[] asArray() {
+        return Arrays.stream(container).map(Commons::unwrap).toArray(Object[]::new);
     }
 
     @Override

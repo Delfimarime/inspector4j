@@ -31,7 +31,7 @@ public class NodeMapperImpl implements NodeMapper {
     }
 
     @Override
-    public Node handle(Object object) {
+    public Node map(Object object) {
         try {
             String key = object == null ? null : keyOf(object);
 
@@ -82,7 +82,7 @@ public class NodeMapperImpl implements NodeMapper {
         }
 
         initialize();
-        Node node = handle(object);
+        Node node = map(object);
         initialize(bean, index, Boolean.TRUE);
         return node;
     }

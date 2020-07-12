@@ -35,7 +35,7 @@ public class InspectorImpl implements Inspector {
         if (object instanceof Node) {
             return (Node) object;
         }
-        return newChain().handle(object);
+        return newMapper().map(object);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class InspectorImpl implements Inspector {
         return (InspectionResult) inspect(instance);
     }
 
-    private NodeMapper newChain() {
+    private NodeMapper newMapper() {
         return NodeMapperImpl.Builder.get()
                 .newAction()
                     .setCondition((obj, chain) -> obj == null).setExecution((obj, chain) -> nodeFactory.create())
@@ -131,7 +131,7 @@ public class InspectorImpl implements Inspector {
 
         for (int index = 0; index < instance.getMethod().getParameters().length; index++) {
             Parameter parameter = instance.getMethod().getParameters()[index];
-            builder.set(parameter.getName(), mapper.handle(instance.getArgs()[index]));
+            builder.set(parameter.getName(), mapper.map(instance.getArgs()[index]));
         }
 
         return builder.setMethod(instance.getMethod()).build();
@@ -139,7 +139,7 @@ public class InspectorImpl implements Inspector {
 
     private Node toMap(Object object, NodeMapper mapper) {
         Map<Node, Node> container = ((Map<?, ?>) object).entrySet().stream()
-                .collect(Collectors.toMap(entry -> mapper.handle(entry.getKey()), entry -> mapper.handle(entry.getValue())));
+                .collect(Collectors.toMap(entry -> mapper.map(entry.getKey()), entry -> mapper.map(entry.getValue())));
         return NodeImpl.Builder.get().setAll(container).build();
     }
 
@@ -157,7 +157,7 @@ public class InspectorImpl implements Inspector {
                 Node.Builder builder = nodeFactory.newBuilder();
 
                 for (Field field : FieldUtils.getAllFieldsList(object.getClass())) {
-                    builder.setNode(field.getName(), mapper.handle(FieldUtils.readField(field, object, true)));
+                    builder.setNode(field.getName(), mapper.map(FieldUtils.readField(field, object, true)));
                 }
 
                 return builder.setType(object.getClass()).build();
@@ -205,7 +205,7 @@ public class InspectorImpl implements Inspector {
         } else if (type.equals(Field.class)) {
             return nodeFactory.create((Field[]) object);
         } else {
-            return new IterableNode(object.getClass(), stream(object).map(mapper::handle).toArray(Node[]::new));
+            return new IterableNode(object.getClass(), stream(object).map(mapper::map).toArray(Node[]::new));
         }
     }
 
@@ -213,7 +213,7 @@ public class InspectorImpl implements Inspector {
         boolean isBasic = object.stream().allMatch(each -> Commons.isKnownType(each.getClass()));
 
         if (!isBasic) {
-            return new IterableNode(object.getClass(), object.stream().map(mapper::handle).toArray(Node[]::new));
+            return new IterableNode(object.getClass(), object.stream().map(mapper::map).toArray(Node[]::new));
         }
 
         return nodeFactory.create(object);
@@ -256,7 +256,7 @@ public class InspectorImpl implements Inspector {
         } else if (object instanceof Field) {
             return nodeFactory.create((Field) object);
         } else {
-            return new IterableNode(object.getClass(), stream(object).map(mapper::handle).toArray(Node[]::new));
+            return new IterableNode(object.getClass(), stream(object).map(mapper::map).toArray(Node[]::new));
         }
     }
 
