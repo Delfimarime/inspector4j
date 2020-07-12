@@ -5,10 +5,7 @@ import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.Inspector;
 import org.inspector4j.api.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -49,70 +46,88 @@ public class InspectorImpl implements Inspector {
             throw new IllegalArgumentException("Args mustn't be null ");
         }
 
-        MethodRepresentation instance = new MethodRepresentation();
-        instance.setMethod(method);
-        instance.setArgs(args);
-        return (InspectionResult) inspect(instance);
+        Node.Builder builder = nodeFactory.newBuilder();
+
+        for (int index = 0; index < method.getParameterCount(); index++) {
+            Parameter parameter = method.getParameters()[index];
+
+            if (!parameter.isAnnotationPresent(Secret.class)) {
+                builder.setNode(parameter.getName(),inspect(args[index]));
+            }
+
+        }
+
+        final Node node = builder.build();
+
+        return (InspectionResult) Proxy.newProxyInstance(method.getClass().getClassLoader(), new Class[]{InspectionResult.class}, (obj, exec, vars) -> {
+            if (method.getName().equals("getMethod")) {
+                return method;
+            } else if (method.getName().equals("getArgs")) {
+                return Arrays.stream(node.keys()).map(node::get).toArray(Node[]::new);
+            } else {
+                return method.invoke(node, args);
+            }
+        });
     }
 
     private NodeMapper newMapper() {
         return NodeMapperImpl.Builder.get()
                 .newAction()
-                    .setCondition((obj, chain) -> obj == null).setExecution((obj, chain) -> nodeFactory.create())
+                .setCondition((obj, chain) -> obj == null).setExecution((obj, chain) -> nodeFactory.create())
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Node).setExecution((obj, chain) -> (Node) obj)
+                .setCondition((obj, chain) -> obj instanceof Node).setExecution((obj, chain) -> (Node) obj)
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof MethodRepresentation).setExecution(this::toAnalysis)
+                .setCondition((obj, chain) -> obj instanceof MethodRepresentation).setExecution(this::toAnalysis)
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Boolean).setExecution((obj, chain) -> nodeFactory.create((boolean) obj))
+                .setCondition((obj, chain) -> obj instanceof Boolean).setExecution((obj, chain) -> nodeFactory.create((boolean) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Integer).setExecution((obj, chain) -> nodeFactory.create((int) obj))
+                .setCondition((obj, chain) -> obj instanceof Integer).setExecution((obj, chain) -> nodeFactory.create((int) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Double).setExecution((obj, chain) -> nodeFactory.create((double) obj))
+                .setCondition((obj, chain) -> obj instanceof Double).setExecution((obj, chain) -> nodeFactory.create((double) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Long).setExecution((obj, chain) -> nodeFactory.create((long) obj))
+                .setCondition((obj, chain) -> obj instanceof Long).setExecution((obj, chain) -> nodeFactory.create((long) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Float).setExecution((obj, chain) -> nodeFactory.create((float) obj))
+                .setCondition((obj, chain) -> obj instanceof Float).setExecution((obj, chain) -> nodeFactory.create((float) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Byte).setExecution((obj, chain) -> nodeFactory.create((byte) obj))
+                .setCondition((obj, chain) -> obj instanceof Byte).setExecution((obj, chain) -> nodeFactory.create((byte) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof BigDecimal).setExecution((obj, chain) -> nodeFactory.create((BigDecimal) obj))
+                .setCondition((obj, chain) -> obj instanceof BigDecimal).setExecution((obj, chain) -> nodeFactory.create((BigDecimal) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof BigInteger).setExecution((obj, chain) -> nodeFactory.create((BigInteger) obj))
+                .setCondition((obj, chain) -> obj instanceof BigInteger).setExecution((obj, chain) -> nodeFactory.create((BigInteger) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Character).setExecution((obj, chain) -> nodeFactory.create((char) obj))
+                .setCondition((obj, chain) -> obj instanceof Character).setExecution((obj, chain) -> nodeFactory.create((char) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof String).setExecution((obj, chain) -> nodeFactory.create((String) obj))
+                .setCondition((obj, chain) -> obj instanceof String).setExecution((obj, chain) -> nodeFactory.create((String) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof CharSequence).setExecution((obj, chain) -> nodeFactory.create((CharSequence) obj))
+                .setCondition((obj, chain) -> obj instanceof CharSequence).setExecution((obj, chain) -> nodeFactory.create((CharSequence) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Enum).setExecution((obj, chain) -> nodeFactory.create((Enum<?>) obj))
+                .setCondition((obj, chain) -> obj instanceof Enum).setExecution((obj, chain) -> nodeFactory.create((Enum<?>) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Date).setExecution((obj, chain) -> nodeFactory.create((Date) obj))
+                .setCondition((obj, chain) -> obj instanceof Date).setExecution((obj, chain) -> nodeFactory.create((Date) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof LocalTime).setExecution((obj, chain) -> nodeFactory.create((LocalTime) obj))
+                .setCondition((obj, chain) -> obj instanceof LocalTime).setExecution((obj, chain) -> nodeFactory.create((LocalTime) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof LocalDate).setExecution((obj, chain) -> nodeFactory.create((LocalDate) obj))
+                .setCondition((obj, chain) -> obj instanceof LocalDate).setExecution((obj, chain) -> nodeFactory.create((LocalDate) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof LocalDateTime).setExecution((obj, chain) -> nodeFactory.create((LocalDateTime) obj))
+                .setCondition((obj, chain) -> obj instanceof LocalDateTime).setExecution((obj, chain) -> nodeFactory.create((LocalDateTime) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof ZonedDateTime).setExecution((obj, chain) -> nodeFactory.create((ZonedDateTime) obj))
+                .setCondition((obj, chain) -> obj instanceof ZonedDateTime).setExecution((obj, chain) -> nodeFactory.create((ZonedDateTime) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Class).setExecution((obj, chain) -> nodeFactory.create((Class<?>) obj))
+                .setCondition((obj, chain) -> obj instanceof Class).setExecution((obj, chain) -> nodeFactory.create((Class<?>) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Method).setExecution((obj, chain) -> nodeFactory.create((Method) obj))
+                .setCondition((obj, chain) -> obj instanceof Method).setExecution((obj, chain) -> nodeFactory.create((Method) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Field).setExecution((obj, chain) -> nodeFactory.create((Field) obj))
+                .setCondition((obj, chain) -> obj instanceof Field).setExecution((obj, chain) -> nodeFactory.create((Field) obj))
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Collection).setExecution((obj, chain) -> toCollection((Collection<?>) obj, chain))
+                .setCondition((obj, chain) -> obj instanceof Collection).setExecution((obj, chain) -> toCollection((Collection<?>) obj, chain))
                 .next()
-                    .setCondition((obj, chain) -> TypeUtils.isArrayType(obj.getClass())).setExecution(this::toArray)
+                .setCondition((obj, chain) -> TypeUtils.isArrayType(obj.getClass())).setExecution(this::toArray)
                 .next()
-                    .setCondition((obj, chain) -> obj instanceof Map).setExecution(this::toMap)
+                .setCondition((obj, chain) -> obj instanceof Map).setExecution(this::toMap)
                 .next()
-                    .setCondition((obj, chain) -> obj != null).setExecution(this::toObject)
+                .setCondition((obj, chain) -> obj != null).setExecution(this::toObject)
                 .apply()
-                    .build();
+                .build();
     }
 
     private Node toAnalysis(Object object, NodeMapper mapper) {
@@ -157,7 +172,9 @@ public class InspectorImpl implements Inspector {
                 Node.Builder builder = nodeFactory.newBuilder();
 
                 for (Field field : FieldUtils.getAllFieldsList(object.getClass())) {
-                    builder.setNode(field.getName(), mapper.map(FieldUtils.readField(field, object, true)));
+                    if (!field.isAnnotationPresent(Secret.class)) {
+                        builder.setNode(field.getName(), mapper.map(FieldUtils.readField(field, object, true)));
+                    }
                 }
 
                 return builder.setType(object.getClass()).build();

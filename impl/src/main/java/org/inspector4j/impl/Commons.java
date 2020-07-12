@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Commons {
+class Commons {
 
     private static final Class<?>[] KNOWN_TYPES = {int.class, Integer.class, float.class, Float.class,
             long.class, Long.class, byte.class, double.class, Double.class, byte.class, Byte.class,
