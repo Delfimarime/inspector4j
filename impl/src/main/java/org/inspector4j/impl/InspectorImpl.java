@@ -52,7 +52,7 @@ public class InspectorImpl implements Inspector {
             Parameter parameter = method.getParameters()[index];
 
             if (!parameter.isAnnotationPresent(Secret.class)) {
-                builder.setNode(parameter.getName(),inspect(args[index]));
+                builder.setNode(parameter.getName(), inspect(args[index]));
             }
 
         }
@@ -76,8 +76,6 @@ public class InspectorImpl implements Inspector {
                 .setCondition((obj, chain) -> obj == null).setExecution((obj, chain) -> nodeFactory.create())
                 .next()
                 .setCondition((obj, chain) -> obj instanceof Node).setExecution((obj, chain) -> (Node) obj)
-                .next()
-                .setCondition((obj, chain) -> obj instanceof MethodRepresentation).setExecution(this::toAnalysis)
                 .next()
                 .setCondition((obj, chain) -> obj instanceof Boolean).setExecution((obj, chain) -> nodeFactory.create((boolean) obj))
                 .next()
@@ -130,27 +128,6 @@ public class InspectorImpl implements Inspector {
                 .build();
     }
 
-    private Node toAnalysis(Object object, NodeMapper mapper) {
-
-        if (object == null) {
-            return nodeFactory.create();
-        }
-
-        if (!(object instanceof MethodRepresentation)) {
-            throw new IllegalArgumentException("Unsupported type " + object.getClass().getName());
-        }
-
-        MethodRepresentation instance = (MethodRepresentation) object;
-
-        InspectionResultImpl.Builder builder = InspectionResultImpl.Builder.get();
-
-        for (int index = 0; index < instance.getMethod().getParameters().length; index++) {
-            Parameter parameter = instance.getMethod().getParameters()[index];
-            builder.set(parameter.getName(), mapper.map(instance.getArgs()[index]));
-        }
-
-        return builder.setMethod(instance.getMethod()).build();
-    }
 
     private Node toMap(Object object, NodeMapper mapper) {
         Map<Node, Node> container = ((Map<?, ?>) object).entrySet().stream()
