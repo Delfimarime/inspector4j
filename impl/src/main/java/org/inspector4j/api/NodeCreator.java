@@ -1,13 +1,12 @@
 package org.inspector4j.api;
 
-@FunctionalInterface
-public interface NodeMapper {
+public interface NodeCreator {
 
-    Node map(Object object);
+    Node map(Context context, Object object);
 
     interface Builder {
 
-        NodeMapper build();
+        NodeCreator build();
 
         Builder apply(Action action);
 

@@ -1,24 +1,23 @@
 package org.inspector4j.api;
 
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 @FunctionalInterface
 public interface Action {
 
-    Node handle(Object object, NodeMapper mapper);
+    Node map(Context context, NodeCreator mapper, Object object);
 
-    interface Builder  {
+    interface Builder {
 
-        Builder setCondition(BiPredicate<Object, NodeMapper> condition);
+        Builder setCondition(BiPredicate<Object, NodeCreator> condition);
 
-        Builder setExecution(BiFunction<Object, NodeMapper, Node> execution);
+        Builder setExecution(TriFunction<Context, NodeCreator, Object, Node> execution);
 
         Builder next();
 
         Action build();
 
-        NodeMapper.Builder apply();
+        NodeCreator.Builder apply();
 
     }
 

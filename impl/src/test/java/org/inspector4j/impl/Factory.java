@@ -1,5 +1,6 @@
 package org.inspector4j.impl;
 
+import org.inspector4j.api.Secret;
 import org.inspector4j.impl.model.Person;
 
 public class Factory {

@@ -9,61 +9,62 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 public class InspectorTests {
 
-    @Test
-    public void single() {
-        Node node = Inspector4J.get().inspect(getSingle());
-        Assert.assertEquals(4, node.size());
-    }
-
-    @Test
-    public void withChildren() {
-        Object object = getFamilyFather();
-        Node node = Inspector4J.get().inspect(object);
-        Assert.assertEquals(node.size(), 4);
-
-        System.out.println(node.get("children"));
-
-    }
 
     @Test
     public void run() throws Exception {
+        System.setProperty("org.inspector4j.secrets.is-aware", "true");
+        System.setProperty("org.inspector4j.secrets.visibility.override", "true");
+        run(true);
+
+        System.setProperty("org.inspector4j.secrets.visibility.override", "false");
+        run(false);
+    }
+
+
+    private void run(boolean isSecretAware) throws Exception {
+
         Inspector instance = Inspector4J.get();
         Method method = Factory.class.getMethod("create", Person.class, Type.class);
+        InspectionResult node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD, isSecretAware});
 
-        InspectionResult node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD});
+        Assert.assertEquals("Method must contain 2 parameters", 2, node.size());
+        Assert.assertTrue("Method must have  person and type as parameters ", node.get("person") != null && node.get("type") != null);
 
-        System.out.println(node.get("person").asMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
-        System.out.println(node.get("person").toMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
-        System.out.println(node.get("person").get("value").get(0).asText()); // PICK PARAMETER WITH NAME person , THEN PICK ATTRIBUTE value WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 FROM THE ATTRIBUTE AND LASTLY LASTLY RETURN THE ATTRIBUTE
-        System.out.println(node.get("person").get("friends").get(0).get("name").asText()); // PICK PARAMETER WITH NAME person ( WHICH IS Adam ), THEN PICK ATTRIBUTE friends WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 (WHICH IS PERSON WITH NAME Lilith ) FROM THE ATTRIBUTE , THEN PICK name ATTRIBUTE FROM LAST ATTRIBUTE (PERSON with name Lilith)  AND LASTLY RETURN THE ATTRIBUTE AS TEXT
-        System.out.println(node.get("person").get("friends").get(0).asMap());
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name").asText());
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
+        Assert.assertTrue("Type parameter must be an enum", node.get("type").isEnumerated());
+        Assert.assertEquals("Type parameter must be an enum and equals to Type.WOOD", Type.WOOD, node.get("type").asEnum());
+
+        assertObject(node.get("person"), isSecretAware);
+
+        if (isSecretAware) {
+            assertObject(node.get("person").get("friends").get(0), true);
+        }
 
     }
 
-    private Person getSingle() {
-        return Person.builder().age(12).gender(null).name("John").build();
+    private void assertObject(Node node, boolean isSecretAware) {
+        Assert.assertTrue("Person must have gender, and children , and name , and value " + (isSecretAware ? ",and friends " : "") + "and age ", node.get("gender") != null && node.get("children") != null && node.get("name") != null && node.get("value") != null && (!isSecretAware || node.get("friends") != null) && node.get("age") != null);
+
+        Node child = node.get("value");
+        Assert.assertEquals("Person value attribute must have 2 as size", 2, child.size());
+
+        Assert.assertTrue("Person value attribute in index [0] must be Text", child.get(0).isText());
+        Assert.assertEquals("Person value attribute in index [0] must be org", "org", child.get(0).asText());
+
+        Assert.assertTrue("Person value attribute in index [1] must be Text", child.get(1).isText());
+        Assert.assertEquals("Person value attribute in index [1] must be inspector4j", "inspector4j", child.get(1).asText());
+
     }
 
-    private Person getFamilyFather() {
-        Person[] children = new Person[2];
-        children[0] = Person.builder().age(5).gender(null).name("Joseph").build();
-        children[1] = Person.builder().age(1).gender(null).name("Jonathan").build();
-
-        return Person.builder().age(30).gender(null).name("John").children(children).build();
-    }
 
     /**
      * Creates a male {@link Person} which is friend of female {@link Person} where both are friends of each other
+     *
      * @return male {@link Person}
      */
-    private Person getFriendly() {
+    private static Person getFriendly() {
         Person adam = Person.builder().age(30).gender('M').name("Adam").children(null).build();
         Person lilith = Person.builder().age(29).gender('F').name("Lilith").children(null).build();
 

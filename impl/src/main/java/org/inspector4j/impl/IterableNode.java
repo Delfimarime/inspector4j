@@ -3,8 +3,8 @@ package org.inspector4j.impl;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
+import org.inspector4j.core.Commons;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;

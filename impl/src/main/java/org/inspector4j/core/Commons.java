@@ -1,4 +1,4 @@
-package org.inspector4j.impl;
+package org.inspector4j.core;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class Commons {
+public class Commons {
 
     private static final Class<?>[] KNOWN_TYPES = {int.class, Integer.class, float.class, Float.class,
             long.class, Long.class, byte.class, double.class, Double.class, byte.class, Byte.class,
