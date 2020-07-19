@@ -63,6 +63,7 @@ Consider Factory class which solo purpose is to receive an Object, and a Type of
 ```Java
 package org.inspector4j;
 
+import org.inspector4j.api.Secret;
 import org.inspector4j.impl.model.Person;
 
 public class Factory {
@@ -71,7 +72,7 @@ public class Factory {
         return name + " of " + type;
     }
 
-    public <T> Person create(Person person, Type type) {
+    public <T> Person create(@Secret Person person, Type type) {
         throw new UnsupportedOperationException("Cannot create Person of " + type);
     }
 
@@ -93,8 +94,15 @@ public class Example {
         Method method = Factory.class.getMethod("create", Person.class, Type.class); // METHOD TO BE INSPECT FROM CLASS Factory
         Analysis node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD}); // INSPECTS THE METHOD WITH THE ARGS PASSED ON THE METHOD AND PRODUCES AN ANALYSIS WHICH REPRESENTS THE INSPECTION 
                 
-        System.out.println(node.get("person").asMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
-        System.out.println(node.get("person").toMap()); // PICK PARAMETER WITH NAME person , THEN TRANSFORMS EVERY ATTRIBUTE AS MAP OF MAPS
+        System.out.println(node.size()); // IS ONE SINCE PERSON PARAMETER IS ANNOTATED WITH @Secret
+        System.out.println(node.get("type").toEnumerated()); // Type.WOOD
+        
+        
+        System.setProperty("org.inspector4j.secrets.visibility.override", "true");
+    
+        Analysis node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD} , true); // INSPECTS THE METHOD WITH THE ARGS PASSED ON THE METHOD AND PRODUCES AN ANALYSIS WHICH REPRESENTS THE INSPECTION 
+       
+        System.out.println(node.get("person").asMap());
         System.out.println(node.get("person").get("value").get(0).asText()); // PICK PARAMETER WITH NAME person , THEN PICK ATTRIBUTE value WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 FROM THE ATTRIBUTE AND LASTLY LASTLY RETURN THE ATTRIBUTE
         System.out.println(node.get("person").get("friends").get(0).get("name").asText()); // PICK PARAMETER WITH NAME person ( WHICH IS Adam ), THEN PICK ATTRIBUTE friends WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 (WHICH IS PERSON WITH NAME Lilith ) FROM THE ATTRIBUTE , THEN PICK name ATTRIBUTE FROM LAST ATTRIBUTE (PERSON with name Lilith)  AND LASTLY RETURN THE ATTRIBUTE AS TEXT
         System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).asMap());
@@ -119,8 +127,9 @@ public class Example {
 ```
 The above example should create a Node that represents a ***Person*** object with ***name*** Adam with 30 as ***age*** and its friends with a ***Person*** object with ***name*** Lilith and age 29 and that is friend with adam.
  ```
+1
+WOOD
 {gender=M, children=null, name=Adam, value=[Ljava.lang.Object;@50675690, friends=[Ljava.lang.Object;@31b7dea0, age=30}
-{gender=M, children=null, name=Adam, value=[Ljava.lang.Object;@3ac42916, friends=[Ljava.lang.Object;@47d384ee, age=30}
 org
 Lilith
 {gender=F, children=null, name=Lilith, value=[Ljava.lang.Object;@2d6a9952, friends=[Ljava.lang.Object;@22a71081, age=29}
@@ -128,9 +137,14 @@ Adam
 Lilith
 Adam
 
-Process finished with exit code 0
-
 ```
+
+##Configuration
+INSPECTOR4J contains 2 configurations properties which are expected on Java System Properties, which are:
+
+**org.inspector4j.secrets.is-aware** - Determines whether by default secret's should be inspected   , by default is  false
+**org.inspector4j.secrets.visibility.override** - Determines whether scecret visibility override is allowed  , by default is false
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
