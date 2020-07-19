@@ -431,7 +431,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Integer} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isInteger()} is TRUE
      *
-     * @return @{@link Integer} representation
+     * @return {@link Integer} representation
      */
     int asInt();
 
@@ -440,7 +440,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Long} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isLong()} is TRUE
      *
-     * @return @{@link Long} representation
+     * @return {@link Long} representation
      */
     long asLong();
 
@@ -449,7 +449,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link String} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isText()} is TRUE
      *
-     * @return @{@link String} representation
+     * @return {@link String} representation
      */
     String asText();
 
@@ -458,7 +458,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Boolean} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isBoolean()} is TRUE
      *
-     * @return @{@link Boolean} representation
+     * @return {@link Boolean} representation
      */
     boolean asBoolean();
 
@@ -467,7 +467,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Double} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isDouble()} is TRUE
      *
-     * @return @{@link Double} representation
+     * @return {@link Double} representation
      */
     double asDouble();
 
@@ -476,7 +476,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Float} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isFloat()} is TRUE
      *
-     * @return @{@link Float} representation
+     * @return {@link Float} representation
      */
     float asFloat();
 
@@ -485,7 +485,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Byte} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isByte()} is TRUE
      *
-     * @return @{@link Byte} representation
+     * @return {@link Byte} representation
      */
     byte asByte();
 
@@ -494,7 +494,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Date} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isDate()} is TRUE
      *
-     * @return @{@link Date} representation
+     * @return {@link Date} representation
      */
     Date asDate();
 
@@ -503,7 +503,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link LocalTime} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isLocalTime()} is TRUE
      *
-     * @return @{@link LocalTime} representation
+     * @return {@link LocalTime} representation
      */
     LocalTime asLocalTime();
 
@@ -512,7 +512,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link LocalTime} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isLocalDate()} is TRUE
      *
-     * @return @{@link LocalDate} representation
+     * @return {@link LocalDate} representation
      */
     LocalDate asLocalDate();
 
@@ -521,7 +521,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link LocalDateTime} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isLocalDateTime()} is TRUE
      *
-     * @return @{@link LocalDateTime} representation
+     * @return {@link LocalDateTime} representation
      */
     LocalDateTime asLocalDateTime();
 
@@ -530,7 +530,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link ZonedDateTime} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isZonedDateTime()} is TRUE
      *
-     * @return @{@link ZonedDateTime} representation
+     * @return {@link ZonedDateTime} representation
      */
     ZonedDateTime asZonedDateTime();
 
@@ -539,7 +539,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Character} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isCharacter()} is TRUE
      *
-     * @return @{@link Character} representation
+     * @return {@link Character} representation
      */
     char asCharacter();
 
@@ -548,7 +548,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link CharSequence} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isCharSequence()} is TRUE
      *
-     * @return @{@link CharSequence} representation
+     * @return {@link CharSequence} representation
      */
     CharSequence asCharSequence();
 
@@ -557,7 +557,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link BigDecimal} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isBigDecimal()} is TRUE
      *
-     * @return @{@link BigDecimal} representation
+     * @return {@link BigDecimal} representation
      */
     BigDecimal asBigDecimal();
 
@@ -566,7 +566,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link BigInteger} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isBigInteger()} is TRUE
      *
-     * @return @{@link BigInteger} representation
+     * @return {@link BigInteger} representation
      */
     BigInteger asBigInteger();
 
@@ -575,7 +575,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Enum} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isEnumerated()} is TRUE
      *
-     * @return @{@link Enum} representation
+     * @return {@link Enum} representation
      */
     Enum<?> asEnum();
 
@@ -584,7 +584,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Class} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isClass()} is TRUE
      *
-     * @return @{@link Class} representation
+     * @return {@link Class} representation
      */
     Class<?> asClass();
 
@@ -594,7 +594,7 @@ public interface Node {
      * In case the representation cannot be converted to {@link Method} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isMethod()} is TRUE
      *
-     * @return @{@link Method} representation
+     * @return {@link Method} representation
      */
     Method asMethod();
 
@@ -602,7 +602,7 @@ public interface Node {
      * Returns the node representation as {@link Field}
      * In case the representation cannot be converted to {@link Field} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isField()} is TRUE
-     * @return @{@link Field} representation
+     * @return {@link Field} representation
      */
     Field asField();
 
@@ -610,7 +610,7 @@ public interface Node {
      * Returns the node representation as {@link Map}
      * In case the representation cannot be converted to {@link Map} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isContainer()} is TRUE
-     * @return @{@link Map} representation
+     * @return {@link Map} representation
      */
     Map<Object,Object> asMap();
 
@@ -618,9 +618,26 @@ public interface Node {
      * Returns the node representation as {@link Map}
      * In case the representation cannot be converted to {@link Map} an {@link UnsupportedOperationException} is thrown
      * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isContainer()} is TRUE
-     * @return @{@link Map} representation
+     * @return {@link Map} representation
      */
     Map<Object,Object> toMap();
+
+
+    /**
+     * Returns the node representation as {@link java.lang.reflect.Array}
+     * In case the representation cannot be converted to {@link java.lang.reflect.Array} an {@link UnsupportedOperationException} is thrown
+     * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isSequence()} is TRUE
+     * @return {@link java.lang.reflect.Array} representation
+     */
+    Object[] asArray();
+
+    /**
+     * Returns the node representation as {@link java.lang.reflect.Array}
+     * In case the representation cannot be converted to {@link java.lang.reflect.Array} an {@link UnsupportedOperationException} is thrown
+     * , in order to avoid the {@link UnsupportedOperationException} , this method should be called when {@link #isSequence()} is TRUE
+     * @return {@link java.lang.reflect.Array} representation
+     */
+    Object[] toArray();
 
 
     /**

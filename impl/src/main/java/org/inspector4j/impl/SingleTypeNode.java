@@ -373,4 +373,14 @@ public abstract class SingleTypeNode implements Node {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public Object[] asArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object[] toArray() {
+        throw new UnsupportedOperationException();
+    }
+
 }

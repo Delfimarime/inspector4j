@@ -12,7 +12,6 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 
 public abstract class ObjectTypeNode implements Node {
@@ -403,6 +402,16 @@ public abstract class ObjectTypeNode implements Node {
 
     @Override
     public Field asField() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object[] asArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object[] toArray() {
         throw new UnsupportedOperationException();
     }
 

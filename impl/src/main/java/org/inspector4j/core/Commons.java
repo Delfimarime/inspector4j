@@ -1,4 +1,4 @@
-package org.inspector4j.impl;
+package org.inspector4j.core;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
