@@ -78,7 +78,7 @@ public class DefaultInspector implements Inspector {
         return builder;
     }
 
-    private InspectionResult getInstance(Node node) {
+    private InspectionResult  getInstance(Node node) {
         return (InspectionResult) Proxy.newProxyInstance(InspectionResult.class.getClassLoader(), new Class[]{Node.class, InspectionResult.class}, (obj, exec, vars) -> {
             if (exec.getName().equals("getMethod")) {
                 return exec;
@@ -334,7 +334,7 @@ public class DefaultInspector implements Inspector {
     }
 
     private boolean isSecretOverrideAllowed() {
-        return Optional.ofNullable(System.getProperty("org.inspector4j.secrets.visibility.override")).map(Boolean::parseBoolean).orElse(false);
+        return Optional.ofNullable(System.getProperty("org.inspector4j.secrets.is-aware.override")).map(Boolean::parseBoolean).orElse(false);
     }
 
     private boolean determineInspectAll(boolean inspectAll) {
