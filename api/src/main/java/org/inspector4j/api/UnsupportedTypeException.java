@@ -1,7 +1,5 @@
 package org.inspector4j.api;
 
-import org.inspector4j.api.InspectorException;
-
 public class UnsupportedTypeException extends InspectorException {
 
     public UnsupportedTypeException() {

@@ -2,7 +2,7 @@
 
 INSPECTOR4J , **IN**(PUT)(INS)**PECTOR** for Java , is a Java library which provides method and arguments inspect and generates nodes which represents both.
  
-## Installation
+## Usage
 
 Use the package manager [maven](https://maven.apache.org/) to install inspector4j.
 On your project maven **POM.xml** add bellow dependencies:
@@ -15,7 +15,7 @@ On your project maven **POM.xml** add bellow dependencies:
     <version>1.0.0-RELEASE</version>
   </dependency>
 
-  <!-- API IMPLEMENTATION -->
+  <!-- IMPLEMENTATION -->
   <dependency>
     <groupId>org.inspector4j</groupId>
     <artifactId>impl</artifactId>
@@ -23,62 +23,38 @@ On your project maven **POM.xml** add bellow dependencies:
   </dependency>
 ```
 
-## Usage
-To inspect a method and parameters the first step is to get an inspector instance which could be retrieved by the invocation of Inspect4J.get(), and then invoke inspect Method from the Inspector instance.\
-Consider the bellow example where we have a Person class defined as :
+## Configuration
+INSPECTOR4J contains 2 configurations properties which are expected at the JVM system properties , which are:
+
+**org.inspector4j.secrets.is-aware** - Determines whether by default secret's should be inspected , by default is  false. Any **java.reflect.Parameter** or **java.reflect.Field** or **java.reflect.Type** annotated with **@org.inspector4j.api.Secret** are considered secrets;
+
+**org.inspector4j.secrets.is-aware.override** - Determines whether scecret **org.inspector4j.secrets.is-aware** is overridable , by default is false. In case **org.inspector4j.Inspector** method **public InspectionResult inspect(Method method, Object[] args, boolean inspectAll)** with **inspectAll** is **true** and this configuration is **false** meanwhile **org.inspector4j.secrets.is-aware** configuration is **false** secrets will not be inspected.
+
+
+## Getting Started
+Here's a quick teaser of an example for this library.  Let's consider the a factory class that contains a method **public String createCompliment(String name, @Secret String surname)** which receives a name and surname and generates a compliment according to the argument's.
 ```Java
 package org.inspector4j;
 
-public class Person implements Serializable {
-    private static String[] value = {"org","inspector4j"};
-
-    private int age;
-    private String name;
-    private Character gender;
-    private Person[] children;
-    private Person[] friends;
-
-    // GETTERS AND SETTERS
-
-    public static Builder builder(){
-        // CREATES A BUILDER INSTANCE AND RETURNS IT
-    }   
-    
-    public static class Builder {
-        // BUILDER CLASS METHODS
-    }
-
-}
-```
-
-Consider Type an Enum defined as :
-```Java
-package org.inspector4j;
-
-public enum Type {
-    GOLD, SILVER, BRONZE, WOOD, STONE;
-}
-```
-Consider Factory class which solo purpose is to receive an Object, and a Type of material to produce the same Object but made of the Type indicated. Find the definition bellow :
-```Java
-package org.inspector4j;
-
-import org.inspector4j.api.Secret;
-import org.inspector4j.impl.model.Person;
+import org.inspector4j.*;
 
 public class Factory {
 
-    public String create(String name, Type type) {
-        return name + " of " + type;
+  public String createCompliment(String name , @Secret String surname) {
+    if(surname == null && name == null ) {
+        throw new IllegalArgumentException(" Name and surname mustn't be null at the same time");
+    } else if(name != null && surname != null ) {
+        return "Hello " +surname+" , "+ name;
+    } else if(name != null ) {
+        return "Hello " + name;
+    } else {
+        return "Hello " + surname;
     }
-
-    public <T> Person create(@Secret Person person, Type type) {
-        throw new UnsupportedOperationException("Cannot create Person of " + type);
-    }
+  }
 
 }
 ```
-Finally, consider the Example class which must inspect ***create*** method from ***Factory*** class
+Consider an **Example** class which contains a **main** method that explores different scenarios , as describe bellow:
 ```Java
 package org.inspector4j;
 
@@ -89,62 +65,31 @@ import org.inspector4j.api.Node;
 
 public class Example {
 
-    public static void main (String[]args){
-        Inspector instance = Inspector4J.get(); // GETS INSPECTOR INSTANCE WHICH IS USED TO INSPECT 
-        Method method = Factory.class.getMethod("create", Person.class, Type.class); // METHOD TO BE INSPECT FROM CLASS Factory
-        Analysis node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD}); // INSPECTS THE METHOD WITH THE ARGS PASSED ON THE METHOD AND PRODUCES AN ANALYSIS WHICH REPRESENTS THE INSPECTION 
-                
-        System.out.println(node.size()); // IS ONE SINCE PERSON PARAMETER IS ANNOTATED WITH @Secret
-        System.out.println(node.get("type").toEnumerated()); // Type.WOOD
+    public static void main ( String[] args ) {
+
+        Inspector instance = Inspector4J.get(); // gets inspector instance which is responsible for inspection 
+        Method method = Factory.class.getMethod("create" , String.class , String.class ); // retrieves the method intended to be inspected 
+        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , true ); // returns Inspectresult  which is a node that represents the method and parameters which were invoked
         
+        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John } beacuse surname is annotated with @org.inspector4j.api.Secret and org.inspector4j.secrets.is-aware is false which ignores the inspectAll parameter
+     
+        System.setProperty("org.inspector4j.secrets.is-aware.override", "true"); // Change org.inspector4j.secrets.is-aware.override
+
+        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , true ); // returns Inspectresult  which is a node that represents the method and parameters which were invoked
         
-        System.setProperty("org.inspector4j.secrets.visibility.override", "true");
+        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } beacuse org.inspector4j.secrets.is-aware is false but  org.inspector4j.secrets.is-aware.override is true  which means the inspectAll overrides org.inspector4j.secrets.is-aware 
+
+
+        System.setProperty("org.inspector4j.secrets.is-aware", "true"); // Change org.inspector4j.secrets to true which means secret's must be inspected even when explicit indicated not to
+
+        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , false ); // returns Inspectresult  which is a node that represents the method and parameters which were invoked
+        
+        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } beacuse org.inspector4j.secrets.is-aware is true which means secret's must be inspected
     
-        Analysis node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD} , true); // INSPECTS THE METHOD WITH THE ARGS PASSED ON THE METHOD AND PRODUCES AN ANALYSIS WHICH REPRESENTS THE INSPECTION 
-       
-        System.out.println(node.get("person").asMap());
-        System.out.println(node.get("person").get("value").get(0).asText()); // PICK PARAMETER WITH NAME person , THEN PICK ATTRIBUTE value WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 FROM THE ATTRIBUTE AND LASTLY LASTLY RETURN THE ATTRIBUTE
-        System.out.println(node.get("person").get("friends").get(0).get("name").asText()); // PICK PARAMETER WITH NAME person ( WHICH IS Adam ), THEN PICK ATTRIBUTE friends WITHIN THE PARAMETER , THEN GET ELEMENT AT INDEX 0 (WHICH IS PERSON WITH NAME Lilith ) FROM THE ATTRIBUTE , THEN PICK name ATTRIBUTE FROM LAST ATTRIBUTE (PERSON with name Lilith)  AND LASTLY RETURN THE ATTRIBUTE AS TEXT
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).asMap());
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("name").asText());
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
-        System.out.println(node.get("person").get("friends").get(0).get("friends").get(0).get("friends").get(0).get("friends").get(0).get("name").asText());
     }
-    
-     /**
-      * Creates a male {@link Person} which is friend of female {@link Person} where both are friends of each other
-      * @return male {@link Person}
-      */
-    public static Person getFriendly(){
-      Person male = Person.builder().age(30).gender(null).name("Adam").children(null).build();
-      Person female = Person.builder().age(29).gender(null).name("Lilith").children(null).build();
-      female.setFriends(new Person[]{male});
-      male.setFriends(new Person[]{female});
-      return male;
-    }   
 
 }
 ```
-The above example should create a Node that represents a ***Person*** object with ***name*** Adam with 30 as ***age*** and its friends with a ***Person*** object with ***name*** Lilith and age 29 and that is friend with adam.
- ```
-1
-WOOD
-{gender=M, children=null, name=Adam, value=[Ljava.lang.Object;@50675690, friends=[Ljava.lang.Object;@31b7dea0, age=30}
-org
-Lilith
-{gender=F, children=null, name=Lilith, value=[Ljava.lang.Object;@2d6a9952, friends=[Ljava.lang.Object;@22a71081, age=29}
-Adam
-Lilith
-Adam
-
-```
-
-##Configuration
-INSPECTOR4J contains 2 configurations properties which are expected on Java System Properties, which are:
-
-**org.inspector4j.secrets.is-aware** - Determines whether by default secret's should be inspected   , by default is  false
-**org.inspector4j.secrets.visibility.override** - Determines whether scecret visibility override is allowed  , by default is false
-
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
