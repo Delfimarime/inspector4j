@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Configuration xmlns="http://inspector4j.org">
+    <Root scope="ATTRIBUTE" override="false"/>
+    <Inspector name="org.inspector4j.impl.InspectorTests" scope="SECRET" override="false"/>
+</Configuration>

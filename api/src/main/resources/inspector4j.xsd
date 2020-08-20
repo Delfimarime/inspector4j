@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://inspector4j.org" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Configuration" type="ins:ConfigurationType" xmlns:ins="http://inspector4j.org"/>
+  <xs:complexType name="RootType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="scope"/>
+        <xs:attribute type="xs:string" name="override"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="InspectorType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:string" name="scope"/>
+        <xs:attribute type="xs:string" name="override"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ConfigurationType">
+    <xs:sequence>
+      <xs:element type="ins:RootType" name="Root" xmlns:ins="http://inspector4j.org"/>
+      <xs:element type="ins:InspectorType" name="Inspector" xmlns:ins="http://inspector4j.org"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

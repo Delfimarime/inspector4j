@@ -15,18 +15,14 @@ public class InspectorTests {
 
     @Test
     public void run() throws Exception {
-        System.setProperty("org.inspector4j.secrets.is-aware", "true");
-        System.setProperty("org.inspector4j.secrets.visibility.override", "true");
-        run(true);
-
-        System.setProperty("org.inspector4j.secrets.visibility.override", "false");
         run(false);
+        run(true);
     }
 
 
     private void run(boolean isSecretAware) throws Exception {
 
-        Inspector instance = Inspector4J.get();
+        Inspector instance = Inspector4J.get(InspectorTests.class);
         Method method = Factory.class.getMethod("create", Person.class, Type.class);
         InspectionResult node = instance.inspect(method, new Object[]{getFriendly(), Type.WOOD, isSecretAware});
 

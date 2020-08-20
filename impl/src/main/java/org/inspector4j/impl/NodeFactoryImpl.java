@@ -2,7 +2,7 @@ package org.inspector4j.impl;
 
 import org.inspector4j.api.Node;
 import org.inspector4j.api.NodeFactory;
-import org.inspector4j.api.UnsupportedTypeException;
+import org.inspector4j.api.ConversionException;
 import org.inspector4j.core.Commons;
 
 import java.lang.reflect.Field;
@@ -314,7 +314,7 @@ public class NodeFactoryImpl implements NodeFactory {
         String desc = value.stream().filter(each -> !Commons.isKnownType(each.getClass())).map(Object::toString).reduce((acc, v) -> acc.isEmpty() ? v : acc.concat(" , ").concat(v)).orElse(null);
 
         if (desc != null) {
-            throw new UnsupportedTypeException("value contains unsupported types such as " + desc);
+            throw new ConversionException("value contains unsupported types such as " + desc);
         }
 
         Node[] container = value.stream().map(each -> asValue(each.getClass(), each)).toArray(Node[]::new);

@@ -24,15 +24,24 @@ On your project maven **POM.xml** add bellow dependencies:
 ```
 
 ## Configuration
-INSPECTOR4J contains 2 configurations properties which are expected at the JVM system properties , which are:
+INSPECTOR4J configuration manipulation depends on **inspector4j.xml** which must be located in **resources** directory.
+```xml
+<Configuration xmlns="http://inspector4j.org">
+    <Root scope="ATTRIBUTE" override="false"/>
+    <Inspector name="org.inspector4j.impl.InspectorTests" scope="SECRET" override="false"/>
+</Configuration>
+```
+The code above represents the **inspector4j.xml** configuration structure. The **Root** element represents the default configuration that will apply to all Inspector instances not declared in the configuration file , and
+The Inspector element , which is repeatable , specifies the configuration to be applied to a specific Inspector whose **name** attribute matches the name one defined.
+The **Root** & **Inspector** element's contains two attributes which are:  
 
-**org.inspector4j.secrets.is-aware** - Determines whether by default secret's should be inspected , by default is  false. Any **java.reflect.Parameter** or **java.reflect.Field** or **java.reflect.Type** annotated with **@org.inspector4j.api.Secret** are considered secrets;
+**scope** - can be ATTRIBUTE (ignores secret inspection) OR SECRET (include secret inspection )  , by default the value is ATTRIBUTE. Any **java.reflect.Parameter** or **java.reflect.Field** or **java.reflect.Type** annotated with **@org.inspector4j.api.Secret** are considered secrets;
 
-**org.inspector4j.secrets.visibility.override** - Determines whether scecret **org.inspector4j.secrets.is-aware** is overridable , by default is false. In case **org.inspector4j.Inspector** method **public InspectionResult inspect(Method method, Object[] args, boolean inspectAll)** with **inspectAll** is **true** and this configuration is **false** meanwhile **org.inspector4j.secrets.is-aware** configuration is **false** secrets will not be inspected.
+**override** - Determines whether **scope** is overridable , by default is false. In case **org.inspector4j.Inspector** method **public InspectionResult inspect(Method method, Object[] args, boolean inspectAll)** with **inspectAll** is **true** and this configuration is **false** meanwhile **scope** configuration is **ATTRIBUTE** secrets will not be inspected.
 
 
 ## Getting Started
-Here's a quick teaser of an example for this library.  Let's consider the a factory class that contains a method **public String createCompliment(String name, @Secret String surname)** which receives a name and surname and generates a compliment according to the argument's.
+Here's a quick teaser of an example for this library.  Let's consider the factory class which contains a method **public String createCompliment(String name, @Secret String surname)** which receives a name and surname and generates a compliment according to the argument's.
 ```Java
 package org.inspector4j;
 
@@ -54,7 +63,44 @@ public class Factory {
 
 }
 ```
-Consider an **Example** class which contains a **main** method that explores different scenarios , as describe bellow:
+Consider an **Example** class which contains a **main** method that explores different scenarios , as describe:
+### Scenario 1
+```xml
+<Configuration xmlns="http://inspector4j.org">
+    <Inspector name="org.inspector4j.Example" scope="ATTRIBUTE" override="false"/>
+</Configuration>
+```
+
+```Java
+package org.inspector4j;
+
+import org.inspector4j.Inspector;
+import org.inspector4j.api.InspectionResult;
+import org.inspector4j.api.Inspector4J;
+import org.inspector4j.api.Node;
+
+public class Example {
+
+    public static void main ( String[] args ) {
+
+        Inspector instance = Inspector4J.get(Example.class); // gets inspector instance which is responsible for inspection 
+        Method method = Factory.class.getMethod("create" , String.class , String.class ); // retrieves the method intended to be inspected 
+        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , true ); // returns InspectedResult  which is a node that represents the method and parameters which were invoked
+        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John } because surname is annotated with @org.inspector4j.api.Secret and the scope is ATTRIBUTE which ignores the inspectAll parameter and override is false
+    }
+
+}
+```
+
+
+### Scenario 2
+
+```xml
+<Configuration xmlns="http://inspector4j.org">
+    <Root scope="ATTRIBUTE" override="true"/>
+</Configuration>
+```
+
 ```Java
 package org.inspector4j;
 
@@ -69,23 +115,38 @@ public class Example {
 
         Inspector instance = Inspector4J.get(); // gets inspector instance which is responsible for inspection 
         Method method = Factory.class.getMethod("create" , String.class , String.class ); // retrieves the method intended to be inspected 
-        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , true ); // returns Inspectresult  which is a node that represents the method and parameters which were invoked
-        
-        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John } beacuse surname is annotated with @org.inspector4j.api.Secret and org.inspector4j.secrets.is-aware is false which ignores the inspectAll parameter
-     
-        System.setProperty("org.inspector4j.secrets.visibility.override", "true"); // Change org.inspector4j.secrets.visibility.override
 
-        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , true ); // returns Inspectresult  which is a node that represents the method and parameters which were invoked
-        
-        System.out.println(returnObject.asMap()); // asMap() method re**turns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } beacuse org.inspector4j.secrets.is-aware is false but  org.inspector4j.secrets.visibility.override is true  which means the inspectAll overrides org.inspector4j.secrets.is-aware 
+        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , true ); // returns InspectedResult  which is a node that represents the method and parameters which were invoked        
+        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } because scope  is ATTRIBUTE but override is true  which means the inspectAll overrides ATTRIBUTE scope
 
+    }
 
-        System.setProperty("org.inspector4j.secrets.is-aware", "true"); // Change org.inspector4j.secrets to true which means secret's must be inspected even when explicit indicated not to
+}
+```
 
-        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , false ); // returns Inspectresult  which is a node that represents the method and parameters which were invoked
-        
-        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } beacuse org.inspector4j.secrets.is-aware is true which means secret's must be inspected
-    
+### Scenario 3
+
+```xml
+<Configuration xmlns="http://inspector4j.org">
+    <Root scope="SECRET" override="false"/>
+</Configuration>
+```
+
+```Java
+package org.inspector4j;
+
+import org.inspector4j.Inspector;
+import org.inspector4j.api.InspectionResult;
+import org.inspector4j.api.Inspector4J;
+import org.inspector4j.api.Node;
+
+public class Example {
+
+    public static void main ( String[] args ) {
+        Inspector instance = Inspector4J.get(); // gets inspector instance which is responsible for inspection 
+        Method method = Factory.class.getMethod("create" , String.class , String.class ); // retrieves the method intended to be inspected 
+        InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , false ); // returns InspectedResult  which is a node that represents the method and parameters which were invoked
+        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } because scope is SECRET which means secret's must be inspected   
     }
 
 }
