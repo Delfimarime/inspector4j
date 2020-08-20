@@ -28,7 +28,7 @@ INSPECTOR4J contains 2 configurations properties which are expected at the JVM s
 
 **org.inspector4j.secrets.is-aware** - Determines whether by default secret's should be inspected , by default is  false. Any **java.reflect.Parameter** or **java.reflect.Field** or **java.reflect.Type** annotated with **@org.inspector4j.api.Secret** are considered secrets;
 
-**org.inspector4j.secrets.is-aware.override** - Determines whether scecret **org.inspector4j.secrets.is-aware** is overridable , by default is false. In case **org.inspector4j.Inspector** method **public InspectionResult inspect(Method method, Object[] args, boolean inspectAll)** with **inspectAll** is **true** and this configuration is **false** meanwhile **org.inspector4j.secrets.is-aware** configuration is **false** secrets will not be inspected.
+**org.inspector4j.secrets.visibility.override** - Determines whether scecret **org.inspector4j.secrets.is-aware** is overridable , by default is false. In case **org.inspector4j.Inspector** method **public InspectionResult inspect(Method method, Object[] args, boolean inspectAll)** with **inspectAll** is **true** and this configuration is **false** meanwhile **org.inspector4j.secrets.is-aware** configuration is **false** secrets will not be inspected.
 
 
 ## Getting Started
@@ -73,11 +73,11 @@ public class Example {
         
         System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John } beacuse surname is annotated with @org.inspector4j.api.Secret and org.inspector4j.secrets.is-aware is false which ignores the inspectAll parameter
      
-        System.setProperty("org.inspector4j.secrets.is-aware.override", "true"); // Change org.inspector4j.secrets.is-aware.override
+        System.setProperty("org.inspector4j.secrets.visibility.override", "true"); // Change org.inspector4j.secrets.visibility.override
 
         InspectResult returnObject = instance.inspect( method , new Object[] { "John" , "Doe" } , true ); // returns Inspectresult  which is a node that represents the method and parameters which were invoked
         
-        System.out.println(returnObject.asMap()); // asMap() method returns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } beacuse org.inspector4j.secrets.is-aware is false but  org.inspector4j.secrets.is-aware.override is true  which means the inspectAll overrides org.inspector4j.secrets.is-aware 
+        System.out.println(returnObject.asMap()); // asMap() method re**turns the arguments as Map , in this case the expected as output for this print  is { name = John , surname = Doe } beacuse org.inspector4j.secrets.is-aware is false but  org.inspector4j.secrets.visibility.override is true  which means the inspectAll overrides org.inspector4j.secrets.is-aware 
 
 
         System.setProperty("org.inspector4j.secrets.is-aware", "true"); // Change org.inspector4j.secrets to true which means secret's must be inspected even when explicit indicated not to
