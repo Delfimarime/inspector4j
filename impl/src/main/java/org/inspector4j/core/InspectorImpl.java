@@ -22,16 +22,19 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DefaultInspector implements Inspector {
+public class InspectorImpl implements Inspector {
 
     private List<Handler> seq;
+    private final Scope scope;
+    private final boolean dynamic;
     private final NodeFactory factory;
-    private final ThreadLocal<Boolean> inspectAll;
+    private final ThreadLocal<Boolean> override = new ThreadLocal<>();
 
-    public DefaultInspector() {
-        this.initialize();
+    public InspectorImpl(Scope scope, boolean override) {
+        this.scope = scope;
+        this.dynamic = override;
         this.factory = new NodeFactoryImpl();
-        this.inspectAll = new ThreadLocal<>();
+        this.initialize();
     }
 
     @Override
@@ -40,10 +43,10 @@ public class DefaultInspector implements Inspector {
     }
 
     @Override
-    public InspectionResult inspect(Method method, Object[] args, boolean inspectAll) {
+    public InspectionResult inspect(Method method, Object[] args, boolean isSecretScope) {
         try {
 
-            this.inspectAll.set(determineInspectAll(inspectAll));
+            this.override.set((dynamic && isSecretScope) || scope.equals(Scope.SECRET));
 
             if (method == null) {
                 throw new IllegalArgumentException("Method mustn't be null ");
@@ -55,7 +58,7 @@ public class DefaultInspector implements Inspector {
 
             return getInstance(getBuilder(method, args).setType(InspectionResult.class).build());
         } finally {
-            this.inspectAll.remove();
+            this.override.remove();
         }
     }
 
@@ -92,7 +95,7 @@ public class DefaultInspector implements Inspector {
 
     private boolean isCandidate(AnnotatedElement each) {
 
-        if (!inspectAll.get()) {
+        if (override.get()) {
             return true;
         }
 
@@ -333,15 +336,5 @@ public class DefaultInspector implements Inspector {
         return Arrays.stream((T[]) object);
     }
 
-    private boolean isSecretOverrideAllowed() {
-        return Optional.ofNullable(System.getProperty("org.inspector4j.secrets.visibility.override")).map(Boolean::parseBoolean).orElse(false);
-    }
-
-    private boolean determineInspectAll(boolean inspectAll) {
-        if (!isSecretOverrideAllowed()) {
-            return Optional.ofNullable(System.getProperty("org.inspector4j.secrets.is-aware")).map(Boolean::parseBoolean).orElse(false);
-        }
-        return inspectAll;
-    }
 
 }

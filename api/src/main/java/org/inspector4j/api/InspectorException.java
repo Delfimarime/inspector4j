@@ -1,6 +1,6 @@
 package org.inspector4j.api;
 
-public class InspectorException extends RuntimeException {
+public class InspectorException extends Inspect4JException {
     public InspectorException() {
     }
 
