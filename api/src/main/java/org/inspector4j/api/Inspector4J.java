@@ -47,7 +47,7 @@ public final class Inspector4J {
             } else {
                 InspectorConfiguration rootConfiguration = new InspectorConfiguration();
                 rootConfiguration.setScope(Scope.ATTRIBUTE);
-                rootConfiguration.setDynamic(Boolean.FALSE);
+                rootConfiguration.setOverridable(Boolean.FALSE);
 
                 Inspector4J.configuration = new Configuration();
                 configuration.setRoot(rootConfiguration);
@@ -85,7 +85,7 @@ public final class Inspector4J {
         return type == null ? get() : of(type.getName());
     }
 
-    public static Inspector of(String name) {
+    private static Inspector of(String name) {
 
         if (!startedUp) {
 

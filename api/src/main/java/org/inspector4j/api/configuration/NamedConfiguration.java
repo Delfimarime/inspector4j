@@ -13,6 +13,10 @@ public class NamedConfiguration extends InspectorConfiguration {
     public NamedConfiguration() {
     }
 
+    public NamedConfiguration(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
