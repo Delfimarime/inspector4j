@@ -43,13 +43,14 @@ public class MicroprofileConfigurationProvider implements ConfigurationProvider 
         for (String key : keys) {
             NamedConfiguration instance = new NamedConfiguration();
             instance.setName(key);
+
             instance.setScope(config.getOptionalValue("org.inspect4j." + key + ".scope", Scope.class).orElse(null));
             instance.setOverridable(config.getOptionalValue("org.inspect4j." + key + ".override", Boolean.class).orElse(null));
+
             configuration.getInspectors().add(instance);
         }
 
         return configuration;
     }
-
 
 }
