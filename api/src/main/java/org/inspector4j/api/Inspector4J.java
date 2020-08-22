@@ -85,7 +85,7 @@ public final class Inspector4J {
         return type == null ? get() : of(type.getName());
     }
 
-    public static Inspector of(String name) {
+    private static Inspector of(String name) {
 
         if (!startedUp) {
 
