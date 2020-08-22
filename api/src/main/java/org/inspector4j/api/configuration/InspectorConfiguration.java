@@ -28,12 +28,12 @@ public class InspectorConfiguration implements Serializable {
         this.scope = scope;
     }
 
-    public Boolean isOverridable() {
-        return overridable;
+    public Boolean getOverridable() {
+        return override;
     }
 
-    public void setOverridable(Boolean overridable) {
-        this.overridable = overridable;
+    public void setOverridable(Boolean override) {
+        this.override = override;
     }
 
 }
