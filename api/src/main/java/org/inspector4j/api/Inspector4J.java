@@ -47,7 +47,7 @@ public final class Inspector4J {
             } else {
                 InspectorConfiguration rootConfiguration = new InspectorConfiguration();
                 rootConfiguration.setScope(Scope.ATTRIBUTE);
-                rootConfiguration.setDynamic(Boolean.FALSE);
+                rootConfiguration.setOverridable(Boolean.FALSE);
 
                 Inspector4J.configuration = new Configuration();
                 configuration.setRoot(rootConfiguration);
