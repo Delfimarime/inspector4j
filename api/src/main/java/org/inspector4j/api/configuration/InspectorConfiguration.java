@@ -15,7 +15,7 @@ public class InspectorConfiguration implements Serializable {
     private Scope scope;
 
     @XmlAttribute(name = "override")
-    private Boolean override;
+    private Boolean overridable;
 
     public InspectorConfiguration() {
     }
@@ -34,6 +34,5 @@ public class InspectorConfiguration implements Serializable {
 
     public void setOverridable(Boolean override) {
         this.override = override;
-    }
 
 }
