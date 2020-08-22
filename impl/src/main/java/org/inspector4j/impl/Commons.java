@@ -1,9 +1,8 @@
 package org.inspector4j.impl;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.inspector4j.api.Node;
-import org.inspector4j.api.Scope;
-import org.inspector4j.api.Secret;
+import org.inspector4j.api.internal.Node;
+import org.inspector4j.Secret;
 
 import java.lang.reflect.*;
 import java.math.BigDecimal;

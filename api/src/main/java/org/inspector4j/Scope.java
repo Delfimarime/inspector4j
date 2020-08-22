@@ -1,4 +1,4 @@
-package org.inspector4j.api;
+package org.inspector4j;
 
 public enum Scope {
     ATTRIBUTE, SECRET;

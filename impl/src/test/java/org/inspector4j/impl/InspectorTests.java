@@ -1,15 +1,15 @@
 package org.inspector4j.impl;
 
-import org.inspector4j.api.Inspector;
+import org.inspector4j.Inspector4J;
+import org.inspector4j.Scope;
 import org.inspector4j.api.InspectionResult;
-import org.inspector4j.api.Inspector4J;
-import org.inspector4j.api.Node;
+import org.inspector4j.api.Inspector;
+import org.inspector4j.api.internal.Node;
 import org.inspector4j.impl.model.Person;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 public class InspectorTests {
 
@@ -17,6 +17,7 @@ public class InspectorTests {
     @Test
     public void run() throws Exception {
         run(false);
+        Inspector4J.getConfigurationManager().setScope(InspectorTests.class, Scope.ATTRIBUTE);
         run(true);
     }
 

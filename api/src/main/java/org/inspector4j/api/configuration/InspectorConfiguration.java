@@ -1,6 +1,6 @@
 package org.inspector4j.api.configuration;
 
-import org.inspector4j.api.Scope;
+import org.inspector4j.Scope;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,7 +15,7 @@ public class InspectorConfiguration implements Serializable {
     private Scope scope;
 
     @XmlAttribute(name = "override")
-    private Boolean dynamic;
+    private Boolean overridable;
 
     public InspectorConfiguration() {
     }
@@ -28,12 +28,12 @@ public class InspectorConfiguration implements Serializable {
         this.scope = scope;
     }
 
-    public Boolean isDynamic() {
-        return dynamic;
+    public Boolean getOverridable() {
+        return overridable;
     }
 
-    public void setDynamic(Boolean dynamic) {
-        this.dynamic = dynamic;
+    public void setOverridable(Boolean override) {
+        this.overridable = override;
     }
 
 }
