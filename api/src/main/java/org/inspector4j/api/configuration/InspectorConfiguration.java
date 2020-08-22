@@ -34,5 +34,6 @@ public class InspectorConfiguration implements Serializable {
 
     public void setOverridable(Boolean override) {
         this.override = override;
+    }
 
 }
