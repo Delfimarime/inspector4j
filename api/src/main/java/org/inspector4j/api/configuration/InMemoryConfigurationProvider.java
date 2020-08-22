@@ -6,16 +6,16 @@ import java.util.ArrayList;
 
 public class InMemoryConfigurationProvider implements ConfigurationProvider {
 
-    private final Configuration configuration;
+    private final Inspector4JConfiguration configuration;
 
     public InMemoryConfigurationProvider() {
-        this.configuration = new Configuration();
+        this.configuration = new Inspector4JConfiguration();
         this.configuration.setInspectors(new ArrayList<>());
         this.configuration.setRoot(new InspectorConfiguration());
     }
 
     @Override
-    public Configuration toProperties() {
+    public Inspector4JConfiguration toProperties() {
         return configuration;
     }
 

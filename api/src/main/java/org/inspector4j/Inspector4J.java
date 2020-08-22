@@ -1,9 +1,9 @@
-package org.inspector4j.api;
+package org.inspector4j;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.inspector4j.Adapter;
-import org.inspector4j.api.configuration.Configuration;
+import org.inspector4j.api.*;
+import org.inspector4j.api.configuration.Inspector4JConfiguration;
 import org.inspector4j.api.configuration.InspectorConfiguration;
 
 import javax.xml.bind.JAXBContext;
@@ -16,7 +16,7 @@ public final class Inspector4J {
 
     private static Inspector main;
     private static Factory factory;
-    private static Configuration configuration;
+    private static Inspector4JConfiguration configuration;
     private static final Object lock = new Object();
 
     private static boolean startedUp = Boolean.FALSE;
@@ -38,9 +38,9 @@ public final class Inspector4J {
             }
 
             if (io != null) {
-                JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
+                JAXBContext jaxbContext = JAXBContext.newInstance(Inspector4JConfiguration.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                Inspector4J.configuration = (Configuration) jaxbUnmarshaller.unmarshal(io);
+                Inspector4J.configuration = (Inspector4JConfiguration) jaxbUnmarshaller.unmarshal(io);
 
                 LOGGER.info("Configuration {} parsed from {}", Inspector4J.configuration, url.toExternalForm());
 
@@ -49,7 +49,7 @@ public final class Inspector4J {
                 rootConfiguration.setScope(Scope.ATTRIBUTE);
                 rootConfiguration.setOverridable(Boolean.FALSE);
 
-                Inspector4J.configuration = new Configuration();
+                Inspector4J.configuration = new Inspector4JConfiguration();
                 configuration.setRoot(rootConfiguration);
                 configuration.setInspectors(Collections.emptyList());
 

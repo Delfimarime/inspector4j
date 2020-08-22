@@ -11,11 +11,11 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class EnvProperties implements ConfigurationProvider {
+public class SystemConfigurationProvider implements ConfigurationProvider {
 
     private final Predicate<String> predicate;
 
-    public EnvProperties() {
+    public SystemConfigurationProvider() {
         Predicate<String> scopePattern = Pattern.compile("org.inspect4j.configuration.*.scope").asPredicate();
         Predicate<String> overridePattern = Pattern.compile("org.inspect4j.configuration.*.override").asPredicate();
         this.predicate = (value) -> {
@@ -28,7 +28,7 @@ public class EnvProperties implements ConfigurationProvider {
     }
 
     @Override
-    public Configuration toProperties() {
+    public Inspector4JConfiguration toProperties() {
 
         Set<String> fromEnv = keys(System.getenv().keySet());
         Set<String> fromSys = keys(EnumerationUtils.toList(System.getProperties().keys()).stream().map(Object::toString).collect(Collectors.toSet()));
@@ -37,7 +37,7 @@ public class EnvProperties implements ConfigurationProvider {
         keys.addAll(fromEnv);
         keys.addAll(fromSys);
 
-        Configuration configuration = new Configuration();
+        Inspector4JConfiguration configuration = new Inspector4JConfiguration();
 
         configuration.setRoot(new InspectorConfiguration());
         configuration.getRoot().setScope(get("org.inspect4j.scope", Scope.class));

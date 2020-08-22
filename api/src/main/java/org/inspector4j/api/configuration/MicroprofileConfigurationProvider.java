@@ -28,12 +28,12 @@ public class MicroprofileConfigurationProvider implements ConfigurationProvider 
     }
 
     @Override
-    public Configuration toProperties() {
+    public Inspector4JConfiguration toProperties() {
         Config config = ConfigProvider.getConfig();
 
         Set<String> keys = IterableUtils.toList(config.getPropertyNames()).stream().filter(this.predicate).map(each -> each.substring(each.lastIndexOf(".") + 1)).collect(Collectors.toSet());
 
-        Configuration configuration = new Configuration();
+        Inspector4JConfiguration configuration = new Inspector4JConfiguration();
 
         configuration.setRoot(new InspectorConfiguration());
         configuration.getRoot().setScope(config.getOptionalValue("org.inspect4j.scope", Scope.class).orElse(null));
