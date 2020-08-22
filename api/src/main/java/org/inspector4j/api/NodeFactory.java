@@ -15,7 +15,7 @@ public interface NodeFactory {
 
     Node create();
 
-    Node nullOf(Class<?>type);
+    Node nullOf(Class<?> type);
 
     Node create(String value);
 
@@ -126,6 +126,12 @@ public interface NodeFactory {
     Node create(Field[] value);
 
     <T> Node create(Collection<T> value);
+
+    <T> Node create(Collection<T> value, Scope scope);
+
+    <O> Node create(O object);
+
+    <O> Node create(O object, Scope scope);
 
     Node.Builder newBuilder();
 

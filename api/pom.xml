@@ -6,7 +6,7 @@
 
     <groupId>org.inspector4j</groupId>
     <artifactId>api</artifactId>
-    <version>1.0.0-RELEASE</version>
+    <version>3.0.0-RELEASE</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -25,11 +25,13 @@
             <version>${log4j.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.vavr/vavr -->
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
-            <version>0.10.3</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.10</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

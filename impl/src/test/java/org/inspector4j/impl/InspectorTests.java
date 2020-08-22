@@ -1,6 +1,6 @@
 package org.inspector4j.impl;
 
-import org.inspector4j.Inspector;
+import org.inspector4j.api.Inspector;
 import org.inspector4j.api.InspectionResult;
 import org.inspector4j.api.Inspector4J;
 import org.inspector4j.api.Node;
@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class InspectorTests {
 

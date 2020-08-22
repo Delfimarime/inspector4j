@@ -1,11 +1,11 @@
-package org.inspector4j.core;
+package org.inspector4j.impl;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.inspector4j.api.Node;
+import org.inspector4j.api.Scope;
+import org.inspector4j.api.Secret;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -64,6 +64,23 @@ public class Commons {
         cache.clear();
 
         return object;
+    }
+
+    public static boolean isSecret(AnnotatedElement each) {
+
+        if (each.isAnnotationPresent(Secret.class)) {
+            return Boolean.TRUE;
+        }
+
+        if (each instanceof Field) {
+            return ((Field) each).getType().isAnnotationPresent(Secret.class);
+        }
+
+        if (each instanceof Parameter) {
+            return ((Parameter) each).getType().isAnnotationPresent(Secret.class);
+        }
+
+        return Boolean.FALSE;
     }
 
     private static Object extract(Node node) {
