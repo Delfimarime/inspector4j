@@ -15,7 +15,7 @@ public class InspectorConfiguration implements Serializable {
     private Scope scope;
 
     @XmlAttribute(name = "override")
-    private Boolean dynamic;
+    private Boolean override;
 
     public InspectorConfiguration() {
     }
@@ -28,12 +28,12 @@ public class InspectorConfiguration implements Serializable {
         this.scope = scope;
     }
 
-    public Boolean isDynamic() {
-        return dynamic;
+    public Boolean getOverridable() {
+        return override;
     }
 
-    public void setDynamic(Boolean dynamic) {
-        this.dynamic = dynamic;
+    public void setOverridable(Boolean override) {
+        this.override = override;
     }
 
 }
