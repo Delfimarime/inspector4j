@@ -29,11 +29,11 @@ public class InspectorConfiguration implements Serializable {
     }
 
     public Boolean getOverridable() {
-        return override;
+        return overridable;
     }
 
     public void setOverridable(Boolean override) {
-        this.override = override;
+        this.overridable = override;
     }
 
 }

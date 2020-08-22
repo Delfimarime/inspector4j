@@ -28,7 +28,7 @@ public class AdapterImpl implements Adapter {
             throw new IllegalArgumentException("Args mustn't be null ");
         }
 
-        Scope vScope = configuration.isDynamic() ? scope : configuration.getScope();
+        Scope vScope = configuration.getOverridable() ? scope : configuration.getScope();
 
         if (vScope == null) {
             vScope = configuration.getScope();
