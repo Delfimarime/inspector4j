@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.inspector4j.api.Inspector;
 import org.inspector4j.api.configuration.Configuration;
 import org.inspector4j.api.configuration.ConfigurationManager;
+import org.inspector4j.api.configuration.ConfigurationManagerImpl;
 import org.inspector4j.api.internal.Factory;
 import org.inspector4j.api.internal.FactoryImpl;
 
@@ -19,13 +20,32 @@ public final class Inspector4J {
     private static Inspector basic;
     private static Factory factory;
     private static boolean startedUp = Boolean.FALSE;
-    private static ConfigurationManager configurationManager;
+    private static ConfigurationManagerImpl configurationManager;
     private static final Map<String, Inspector> cache = new ConcurrentHashMap<>();
     private static final Logger LOGGER = LogManager.getLogger(Inspector4J.class);
 
-    private static void init() {
+    public static Inspector get() {
+        return findById(null);
+    }
+
+    public static Inspector get(String name) {
+        return findById(null);
+    }
+
+    public static Inspector get(Class<?> type) {
+        return type == null ? get() : findById(type.getName());
+    }
+
+    public static ConfigurationManager getConfigurationManager() {
+        if(!startedUp){
+            afterPropertiesSet();
+        }
+        return configurationManager;
+    }
+
+    private static void afterPropertiesSet() {
         try {
-            configurationManager = new ConfigurationManager();
+            configurationManager = new ConfigurationManagerImpl();
 
             Iterator<Adapter> iterator = ServiceLoader.load(Adapter.class).iterator();
 
@@ -44,18 +64,6 @@ public final class Inspector4J {
         }
     }
 
-    public static Inspector get() {
-        return findById(null);
-    }
-
-    public static Inspector get(String name) {
-        return findById(null);
-    }
-
-    public static Inspector get(Class<?> type) {
-        return type == null ? get() : findById(type.getName());
-    }
-
     private static Inspector findById(String name) {
 
         if (!startedUp) {
@@ -64,7 +72,7 @@ public final class Inspector4J {
                 LOGGER.debug("Inspector4J hasn't been initialized...");
             }
 
-            init();
+            afterPropertiesSet();
 
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Inspector4J has been initialized...");

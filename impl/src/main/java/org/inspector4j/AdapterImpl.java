@@ -59,7 +59,7 @@ public class AdapterImpl implements Adapter {
         for (int index = 0; index < method.getParameterCount(); index++) {
             Parameter parameter = method.getParameters()[index];
 
-            if (Scope.SECRET.equals(scope) || (scope.equals(Scope.ATTRIBUTE) && Commons.isSecret(parameter))) {
+            if (Scope.SECRET.equals(scope) || (scope.equals(Scope.ATTRIBUTE) && !Commons.isSecret(parameter))) {
                 builder.setNode(parameter.getName(), nodeFactory.create(args[index], scope));
             }
 
