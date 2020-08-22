@@ -1,4 +1,4 @@
-package org.inspector4j;
+package org.inspector4j.api;
 
 import org.inspector4j.api.configuration.InspectorConfiguration;
 
