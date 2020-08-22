@@ -1,4 +1,4 @@
-package org.inspector4j.api;
+package org.inspector4j.api.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

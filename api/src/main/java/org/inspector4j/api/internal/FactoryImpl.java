@@ -1,9 +1,10 @@
-package org.inspector4j.api;
+package org.inspector4j.api.internal;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.inspector4j.Adapter;
-import org.inspector4j.api.configuration.InspectorConfiguration;
+import org.inspector4j.api.Inspector;
+import org.inspector4j.api.configuration.Configuration;
 
 import java.lang.reflect.Proxy;
 
@@ -16,7 +17,7 @@ public class FactoryImpl implements Factory {
     }
 
     @Override
-    public Inspector create(InspectorConfiguration configuration) {
+    public Inspector create(Configuration configuration) {
 
         if (configuration == null) {
             throw new IllegalArgumentException("Configuration mustn't be null");

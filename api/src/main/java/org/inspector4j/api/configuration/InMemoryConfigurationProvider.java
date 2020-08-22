@@ -1,6 +1,6 @@
 package org.inspector4j.api.configuration;
 
-import org.inspector4j.api.Scope;
+import org.inspector4j.Scope;
 
 import java.util.ArrayList;
 

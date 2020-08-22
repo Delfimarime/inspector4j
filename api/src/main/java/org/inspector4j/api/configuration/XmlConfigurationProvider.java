@@ -1,6 +1,6 @@
 package org.inspector4j.api.configuration;
 
-import org.inspector4j.api.Inspect4JException;
+import org.inspector4j.Inspect4JException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;

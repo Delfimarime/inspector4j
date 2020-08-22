@@ -1,7 +1,7 @@
 package org.inspector4j.api.configuration;
 
 import org.apache.commons.collections4.EnumerationUtils;
-import org.inspector4j.api.Scope;
+import org.inspector4j.Scope;
 
 import java.util.ArrayList;
 import java.util.HashSet;

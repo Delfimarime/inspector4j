@@ -1,7 +1,7 @@
 package org.inspector4j.api.configuration;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.inspector4j.api.Scope;
+import org.inspector4j.Scope;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +27,7 @@ public class ConfigurationManager {
             container.add(2, microprofile);
         }
 
-        this.seq = container.stream().map(ConfigurationProvider::toProperties).filter(Objects::nonNull).collect(Collectors.toCollection(PriorityQueue::new));
+        this.seq = container.stream().map(ConfigurationProvider::toProperties).filter(Objects::nonNull).collect(Collectors.toCollection(LinkedList::new));
     }
 
     public Scope getScope() {

@@ -1,24 +1,29 @@
-package org.inspector4j.impl;
+package org.inspector4j;
 
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.inspector4j.Adapter;
-import org.inspector4j.api.*;
-import org.inspector4j.api.configuration.InspectorConfiguration;
+import org.inspector4j.api.InspectionResult;
+import org.inspector4j.api.configuration.Configuration;
+import org.inspector4j.api.internal.Node;
+import org.inspector4j.api.internal.NodeFactory;
+import org.inspector4j.impl.Commons;
+import org.inspector4j.impl.NodeFactoryImpl;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 public class AdapterImpl implements Adapter {
 
     private final NodeFactory nodeFactory = new NodeFactoryImpl();
 
     @Override
-    public InspectionResult inspect(InspectorConfiguration configuration, Method method, Object[] args) {
+    public InspectionResult inspect(Configuration configuration, Method method, Object[] args) {
         return inspect(configuration, method, args, Scope.ATTRIBUTE);
     }
 
     @Override
-    public InspectionResult inspect(InspectorConfiguration configuration, Method method, Object[] args, Scope scope) {
+    public InspectionResult inspect(Configuration configuration, Method method, Object[] args, Scope scope) {
 
         if (method == null) {
             throw new IllegalArgumentException("Method mustn't be null ");
@@ -28,7 +33,7 @@ public class AdapterImpl implements Adapter {
             throw new IllegalArgumentException("Args mustn't be null ");
         }
 
-        Scope vScope = configuration.getOverridable() ? scope : configuration.getScope();
+        Scope vScope = configuration.isOverridable() ? scope : configuration.getScope();
 
         if (vScope == null) {
             vScope = configuration.getScope();

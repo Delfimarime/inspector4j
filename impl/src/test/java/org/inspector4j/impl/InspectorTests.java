@@ -3,7 +3,7 @@ package org.inspector4j.impl;
 import org.inspector4j.api.Inspector;
 import org.inspector4j.api.InspectionResult;
 import org.inspector4j.Inspector4J;
-import org.inspector4j.api.Node;
+import org.inspector4j.api.internal.Node;
 import org.inspector4j.impl.model.Person;
 import org.junit.Assert;
 import org.junit.Test;

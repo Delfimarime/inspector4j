@@ -1,13 +1,10 @@
 package org.inspector4j.impl.model;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Setter;
-import lombok.ToString;
-import org.inspector4j.api.Secret;
+import org.inspector4j.Secret;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Builder(toBuilder = true)
 public class Person implements Serializable {
