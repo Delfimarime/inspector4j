@@ -1,19 +1,21 @@
-package org.inspector4j.api.configuration;
+package org.inspector4j.api.configuration.xml;
+
+import org.inspector4j.api.configuration.InspectorConfiguration;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class NamedConfiguration extends InspectorConfiguration {
+public class XmlNamedInspectorConfiguration extends XmlInspectorConfiguration {
 
     @XmlAttribute(name = "name")
     private String name;
 
-    public NamedConfiguration() {
+    public XmlNamedInspectorConfiguration() {
     }
 
-    public NamedConfiguration(String name) {
+    public XmlNamedInspectorConfiguration(String name) {
         this.name = name;
     }
 
