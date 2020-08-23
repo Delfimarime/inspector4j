@@ -2,7 +2,7 @@ package org.inspector4j.api.configuration;
 
 import org.inspector4j.Scope;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InMemoryConfigurationProvider implements ConfigurationProvider {
 
@@ -10,7 +10,7 @@ public class InMemoryConfigurationProvider implements ConfigurationProvider {
 
     public InMemoryConfigurationProvider() {
         this.configuration = new Inspector4JConfiguration();
-        this.configuration.setInspectors(new ArrayList<>());
+        this.configuration.setChildren(new HashMap<>());
         this.configuration.setRoot(new InspectorConfiguration());
     }
 
@@ -34,11 +34,11 @@ public class InMemoryConfigurationProvider implements ConfigurationProvider {
             return setScope(scope);
         }
 
-        NamedConfiguration configuration = get(name);
+        InspectorConfiguration configuration = this.configuration.getChildren().get(name);
 
         if (configuration == null) {
-            configuration = new NamedConfiguration(name);
-            this.configuration.getInspectors().add(configuration);
+            configuration = new InspectorConfiguration();
+            this.configuration.getChildren().put(name, configuration);
         }
 
         configuration.setScope(scope);
@@ -50,11 +50,11 @@ public class InMemoryConfigurationProvider implements ConfigurationProvider {
             return setOverridable(override);
         }
 
-        NamedConfiguration configuration = get(name);
+        InspectorConfiguration configuration = this.configuration.getChildren().get(name);
 
         if (configuration == null) {
-            configuration = new NamedConfiguration(name);
-            this.configuration.getInspectors().add(configuration);
+            configuration = new InspectorConfiguration();
+            this.configuration.getChildren().put(name, configuration);
         }
 
 
@@ -62,8 +62,5 @@ public class InMemoryConfigurationProvider implements ConfigurationProvider {
         return this;
     }
 
-    private NamedConfiguration get(String name) {
-        return configuration.getInspectors().stream().filter(each -> each.getName().equals(name)).findFirst().orElse(null);
-    }
 
 }

@@ -1,18 +1,14 @@
 package org.inspector4j.api.configuration;
 
-import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "Configuration")
 public class Inspector4JConfiguration implements Serializable {
 
-    @XmlElement(name = "Root")
     private InspectorConfiguration root;
 
-    @XmlElement(name = "Inspector")
-    private List<NamedConfiguration> inspectors;
+    private Map<String,InspectorConfiguration> children;
 
     public InspectorConfiguration getRoot() {
         return root;
@@ -22,12 +18,12 @@ public class Inspector4JConfiguration implements Serializable {
         this.root = root;
     }
 
-    public List<NamedConfiguration> getInspectors() {
-        return inspectors;
+    public Map<String, InspectorConfiguration> getChildren() {
+        return children;
     }
 
-    public void setInspectors(List<NamedConfiguration> inspectors) {
-        this.inspectors = inspectors;
+    public void setChildren(Map<String, InspectorConfiguration> children) {
+        this.children = children;
     }
 
 }

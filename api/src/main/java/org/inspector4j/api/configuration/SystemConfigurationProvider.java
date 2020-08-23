@@ -3,7 +3,7 @@ package org.inspector4j.api.configuration;
 import org.apache.commons.collections4.EnumerationUtils;
 import org.inspector4j.Scope;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -42,14 +42,13 @@ public class SystemConfigurationProvider implements ConfigurationProvider {
         configuration.setRoot(new InspectorConfiguration());
         configuration.getRoot().setScope(get("org.inspect4j.scope", Scope.class));
         configuration.getRoot().setOverridable(get("org.inspect4j.override", Boolean.class));
-        configuration.setInspectors(new ArrayList<>());
+        configuration.setChildren(new HashMap<>());
 
         for (String key : keys) {
-            NamedConfiguration instance = new NamedConfiguration();
-            instance.setName(key);
+            InspectorConfiguration instance = new InspectorConfiguration();
             instance.setScope(get("org.inspect4j." + key + ".scope", Scope.class));
             instance.setOverridable(get("org.inspect4j." + key + ".override", Boolean.class));
-            configuration.getInspectors().add(instance);
+            configuration.getChildren().put(key, instance);
         }
 
         return configuration;

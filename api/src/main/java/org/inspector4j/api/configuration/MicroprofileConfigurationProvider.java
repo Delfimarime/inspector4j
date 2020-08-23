@@ -5,7 +5,7 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.inspector4j.Scope;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -38,16 +38,15 @@ public class MicroprofileConfigurationProvider implements ConfigurationProvider 
         configuration.setRoot(new InspectorConfiguration());
         configuration.getRoot().setScope(config.getOptionalValue("org.inspect4j.scope", Scope.class).orElse(null));
         configuration.getRoot().setOverridable(config.getOptionalValue("org.inspect4j.override", Boolean.class).orElse(null));
-        configuration.setInspectors(new ArrayList<>());
+        configuration.setChildren(new HashMap<>());
 
         for (String key : keys) {
-            NamedConfiguration instance = new NamedConfiguration();
-            instance.setName(key);
+            InspectorConfiguration instance = new InspectorConfiguration();
 
             instance.setScope(config.getOptionalValue("org.inspect4j." + key + ".scope", Scope.class).orElse(null));
             instance.setOverridable(config.getOptionalValue("org.inspect4j." + key + ".override", Boolean.class).orElse(null));
 
-            configuration.getInspectors().add(instance);
+            configuration.getChildren().put(key, instance);
         }
 
         return configuration;

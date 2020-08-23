@@ -2,6 +2,7 @@ package org.inspector4j.api.configuration;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.inspector4j.Scope;
+import org.inspector4j.api.configuration.xml.XmlConfigurationProvider;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,12 +51,15 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         }
 
         for (Inspector4JConfiguration configuration : seq) {
-            Scope scope = configuration.getInspectors().stream().filter(each -> each.getName().equals(name)).findFirst().map(InspectorConfiguration::getScope).orElse(null);
+            for (Map.Entry<String, InspectorConfiguration> each : configuration.getChildren().entrySet()) {
+                if (each.getKey().equals(name)) {
+                    Scope value = each.getValue().getScope();
+                    if (value != null) {
+                        return value;
+                    }
 
-            if (scope != null) {
-                return scope;
+                }
             }
-
         }
 
         return Scope.ATTRIBUTE;
@@ -80,12 +84,15 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         }
 
         for (Inspector4JConfiguration configuration : seq) {
-            Boolean value = configuration.getInspectors().stream().filter(each -> each.getName().equals(name)).findFirst().map(each -> each.getOverridable()).orElse(null);
+            for (Map.Entry<String, InspectorConfiguration> each : configuration.getChildren().entrySet()) {
+                if (each.getKey().equals(name)) {
+                    Boolean value = each.getValue().getOverridable();
+                    if (value != null) {
+                        return value;
+                    }
 
-            if (value != null) {
-                return value;
+                }
             }
-
         }
 
         return Boolean.FALSE;
