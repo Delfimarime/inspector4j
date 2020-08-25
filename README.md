@@ -178,13 +178,13 @@ The XML Configuration supports values interpolation where for example **${sys:ov
 </Configuration>
 ```
 
-The code above represents the **inspector4j.xml** configuration structure. The **Root** element represents the default configuration that will apply to all Inspector instances not declared in the configuration file , and
-The Inspector element , which is repeatable , specifies the configuration to be applied to a specific Inspector whose **name** attribute matches the name one defined.
-The **Root** & **Inspector** element's contains two attributes which are:  
+### Microprofile Configuration
+INSPECTOR4J Microprofile Configuration is activated whenever  Microprofile is detected within the **classpath** . The microprofile configuration inspect the Microprofile configuration properties for keys that match **org.inspect4j.&#x2734;.scope** and **org.inspect4j.&#x2734;.override** where &#x2734; should be replaced with the name associated to the **Specified**  ***org.inspector4j.api.Inspector*** . The **Default** ***org.inspector4j.api.Inspector*** can be configured through  **org.inspect4j.scope** and **org.inspect4j.override**
 
-**scope** - can be ATTRIBUTE (ignores secret inspection) OR SECRET (include secret inspection )  , by default the value is ATTRIBUTE. Any **java.reflect.Parameter** or **java.reflect.Field** or **java.reflect.Type** annotated with **@org.inspector4j.api.Secret** are considered secrets;
 
-**override** - Determines whether **scope** is overridable , by default is false. In case **org.inspector4j.Inspector** method **public InspectionResult inspect(Method method, Object[] args, boolean inspectAll)** with **inspectAll** is **true** and this configuration is **false** meanwhile **scope** configuration is **ATTRIBUTE** secrets will not be inspected.
+### System Configuration
+INSPECTOR4J System Configuration inspect's **Environment Properties** and **System Properties** configuration properties for keys that match **org.inspect4j.&#x2734;.scope** and **org.inspect4j.&#x2734;.override** where &#x2734; should be replaced with the name associated to the **Specified**  ***org.inspector4j.api.Inspector*** . The **Default** ***org.inspector4j.api.Inspector*** can be configured through  **org.inspect4j.scope** and **org.inspect4j.override**.
+The inspection search's the property on the **Environment Variable** and in case the property is absent on the **Environment Variable** then **System Variables** is inspected.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
