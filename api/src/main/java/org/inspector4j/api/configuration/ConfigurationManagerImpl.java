@@ -20,13 +20,15 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 
         container.add(inMemory);
         container.add(new XmlConfigurationProvider());
-        container.add(new SystemConfigurationProvider());
+
 
         ConfigurationProvider microprofile = newMicroprofile();
 
         if (microprofile != null) {
             container.add(2, microprofile);
         }
+
+        container.add(new SystemConfigurationProvider());
 
         this.seq = container.stream().map(ConfigurationProvider::toProperties).filter(Objects::nonNull).collect(Collectors.toCollection(LinkedList::new));
     }
