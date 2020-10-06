@@ -1,4 +1,6 @@
-package org.inspector4j.api;
+package org.inspector4j.api.internal;
+
+import org.inspector4j.SecretVisibility;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -127,11 +129,11 @@ public interface NodeFactory {
 
     <T> Node create(Collection<T> value);
 
-    <T> Node create(Collection<T> value, Scope scope);
+    <T> Node create(Collection<T> value, SecretVisibility visibility);
 
     <O> Node create(O object);
 
-    <O> Node create(O object, Scope scope);
+    <O> Node create(O object, SecretVisibility visibility);
 
     Node.Builder newBuilder();
 

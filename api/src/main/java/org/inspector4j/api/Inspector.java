@@ -1,8 +1,6 @@
 package org.inspector4j.api;
 
-import org.inspector4j.api.InspectionResult;
-import org.inspector4j.api.configuration.InspectorConfiguration;
-import org.inspector4j.api.Node;
+import org.inspector4j.api.internal.Node;
 
 import java.lang.reflect.Method;
 

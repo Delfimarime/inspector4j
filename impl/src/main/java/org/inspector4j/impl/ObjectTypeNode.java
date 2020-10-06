@@ -1,6 +1,6 @@
 package org.inspector4j.impl;
 
-import org.inspector4j.api.Node;
+import org.inspector4j.api.internal.Node;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

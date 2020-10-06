@@ -3,8 +3,11 @@ package org.inspector4j.impl;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.inspector4j.api.*;
-import org.inspector4j.impl.*;
+import org.inspector4j.SecretVisibility;
+import org.inspector4j.api.internal.ConversionException;
+import org.inspector4j.api.internal.InspectionException;
+import org.inspector4j.api.internal.Node;
+import org.inspector4j.api.internal.NodeFactory;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -316,8 +319,8 @@ public class NodeFactoryImpl implements NodeFactory {
     }
 
     @Override
-    public <T> Node create(Collection<T> value, Scope scope) {
-        return toCollection(scope == null ? Scope.ATTRIBUTE : scope, value, new HashMap<>(), new HashMap<>(), new LinkedList<>());
+    public <T> Node create(Collection<T> value, SecretVisibility visibility) {
+        return toCollection(visibility == null ? SecretVisibility.MASKED : visibility, value, new HashMap<>(), new HashMap<>(), new LinkedList<>());
     }
 
     @Override
@@ -326,11 +329,11 @@ public class NodeFactoryImpl implements NodeFactory {
     }
 
     @Override
-    public <O> Node create(O object, Scope scope) {
-        return create(scope == null ? Scope.ATTRIBUTE : scope, object, new HashMap<>(), new HashMap<>(), new LinkedList<>());
+    public <O> Node create(O object, SecretVisibility visibility) {
+        return create(visibility == null ? SecretVisibility.MASKED : visibility, object, new HashMap<>(), new HashMap<>(), new LinkedList<>());
     }
 
-    private <O> Node create(Scope scope, O object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
+    private <O> Node create(SecretVisibility visibility, O object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
 
         if (object == null) {
             return emptyNode;
@@ -339,11 +342,11 @@ public class NodeFactoryImpl implements NodeFactory {
         Node instance = null;
 
         if (object.getClass().isArray()) {
-            return toArray(scope, object, cache, ref, queue);
+            return toArray(visibility, object, cache, ref, queue);
         }
 
         if (object instanceof Collection) {
-            return toCollection(scope, object, cache, ref, queue);
+            return toCollection(visibility, object, cache, ref, queue);
         }
 
         if (object instanceof Node) {
@@ -386,10 +389,10 @@ public class NodeFactoryImpl implements NodeFactory {
             instance = create((AnnotatedElement) object);
         }
 
-        return instance != null ? instance : toNode(scope, object, cache, ref, queue);
+        return instance != null ? instance : toNode(visibility, object, cache, ref, queue);
     }
 
-    private <O> Node toNode(Scope scope, O object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
+    private <O> Node toNode(SecretVisibility visibility, O object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
         try {
 
             if (object == null) {
@@ -412,10 +415,17 @@ public class NodeFactoryImpl implements NodeFactory {
 
             for (Field field : FieldUtils.getAllFields(object.getClass())) {
 
-                if (Scope.SECRET.equals(scope) || (scope.equals(Scope.ATTRIBUTE) && !Commons.isSecret(field))) {
+                if (SecretVisibility.VISIBLE.equals(visibility) || (visibility.equals(SecretVisibility.MASKED))) {
+                    Node node;
 
                     queue.add(object);
-                    Node node = create(scope, FieldUtils.readField(field, object, true), cache, ref, queue);
+
+                    if (Commons.isSecret(field) && visibility.equals(SecretVisibility.MASKED)) {
+                        node = new MaskedNode(field.getType());
+                    } else {
+                        node = create(visibility, FieldUtils.readField(field, object, true), cache, ref, queue);
+                    }
+
                     queue.remove(object);
 
                     ref.remove(key);
@@ -423,7 +433,6 @@ public class NodeFactoryImpl implements NodeFactory {
 
                     builder.setNode(field.getName(), node);
                 }
-
             }
 
             return builder.setType(object.getClass()).build();
@@ -526,7 +535,7 @@ public class NodeFactoryImpl implements NodeFactory {
         }
     }
 
-    private Node toArray(Scope scope, Object object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
+    private Node toArray(SecretVisibility visibility, Object object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
         if (object == null) {
             return null;
         }
@@ -535,11 +544,11 @@ public class NodeFactoryImpl implements NodeFactory {
         Class<?> objectType = (Class<?>) TypeUtils.getArrayComponentType(object.getClass());
 
         if (objectType.isArray()) {
-            mapper = (obj) -> toArray(scope, obj, cache, ref, queue);
+            mapper = (obj) -> toArray(visibility, obj, cache, ref, queue);
         }
 
         if (ClassUtils.isAssignable(objectType, Collection.class)) {
-            mapper = (obj) -> toCollection(scope, obj, cache, ref, queue);
+            mapper = (obj) -> toCollection(visibility, obj, cache, ref, queue);
         }
 
         if (ClassUtils.isAssignable(objectType, Node.class)) {
@@ -583,13 +592,13 @@ public class NodeFactoryImpl implements NodeFactory {
         }
 
         if (mapper == null) {
-            mapper = (obj) -> toNode(scope, obj, cache, ref, queue);
+            mapper = (obj) -> toNode(visibility, obj, cache, ref, queue);
         }
 
         return new IterableNode(objectType, stream(object).map(mapper).toArray(Node[]::new));
     }
 
-    private Node toCollection(Scope scope, Object object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
+    private Node toCollection(SecretVisibility visibility, Object object, Map<String, Node> cache, Map<String, Node> ref, Queue<Object> queue) {
         if (object == null) {
             return create();
         }
@@ -600,7 +609,7 @@ public class NodeFactoryImpl implements NodeFactory {
             throw new ConversionException("value contains unsupported types such as " + desc);
         }
 
-        Node[] container = (Node[]) ((Collection) object).stream().map(each -> create(scope, each, cache, ref, queue)).toArray(Node[]::new);
+        Node[] container = (Node[]) ((Collection) object).stream().map(each -> create(visibility, each, cache, ref, queue)).toArray(Node[]::new);
 
         return new IterableNode(object.getClass(), container);
     }

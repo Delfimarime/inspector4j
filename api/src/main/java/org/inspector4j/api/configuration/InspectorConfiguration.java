@@ -1,6 +1,6 @@
 package org.inspector4j.api.configuration;
 
-import org.inspector4j.api.Scope;
+import org.inspector4j.SecretVisibility;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,30 +10,32 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class InspectorConfiguration implements Serializable {
 
+    public static final String VISIBILITY_FIELD = "secrets-visibility";
+    public static final String ALLOW_RUNTIME_CONFIGURATION_FIELD = "secret-visibility";
 
-    @XmlAttribute(name = "scope")
-    private Scope scope = Scope.ATTRIBUTE;
+    @XmlAttribute(name = VISIBILITY_FIELD)
+    private SecretVisibility visibility;
 
-    @XmlAttribute(name = "override")
-    private boolean dynamic;
+    @XmlAttribute(name = ALLOW_RUNTIME_CONFIGURATION_FIELD)
+    private Boolean allowRuntimeConfiguration;
 
     public InspectorConfiguration() {
     }
 
-    public Scope getScope() {
-        return scope;
+    public SecretVisibility getVisibility() {
+        return visibility;
     }
 
-    public void setScope(Scope scope) {
-        this.scope = scope;
+    public void setVisibility(SecretVisibility visibility) {
+        this.visibility = visibility;
     }
 
-    public boolean isDynamic() {
-        return dynamic;
+    public Boolean getAllowRuntimeConfiguration() {
+        return allowRuntimeConfiguration;
     }
 
-    public void setDynamic(boolean dynamic) {
-        this.dynamic = dynamic;
+    public void setAllowRuntimeConfiguration(Boolean override) {
+        this.allowRuntimeConfiguration = override;
     }
 
 }

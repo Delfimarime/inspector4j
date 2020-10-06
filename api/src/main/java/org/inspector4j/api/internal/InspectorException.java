@@ -1,4 +1,6 @@
-package org.inspector4j.api;
+package org.inspector4j.api.internal;
+
+import org.inspector4j.Inspect4JException;
 
 public class InspectorException extends Inspect4JException {
     public InspectorException() {

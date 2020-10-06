@@ -1,6 +1,6 @@
 package org.inspector4j.impl;
 
-import org.inspector4j.api.Node;
+import org.inspector4j.api.internal.Node;
 
 public class UndefinedNode extends SingleTypeNode implements Node {
 
