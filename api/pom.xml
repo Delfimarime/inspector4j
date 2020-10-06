@@ -6,7 +6,7 @@
 
     <groupId>org.inspector4j</groupId>
     <artifactId>api</artifactId>
-    <version>3.1.1-RELEASE</version>
+    <version>3.1.2-RELEASE</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -16,6 +16,28 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <developers>
+        <developer>
+            <id>RaitonBL</id>
+            <name>Delfim Marime</name>
+            <email>Delfimarime@raitonbl.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <properties>
+                <github>https://github.com/Delfimarime</github>
+            </properties>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Delfimarime/inspector4j</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
 

@@ -6,8 +6,30 @@
 
     <groupId>org.inspector4j</groupId>
     <artifactId>impl</artifactId>
-    <version>2.0.1-RELEASE</version>
+    <version>2.0.2-RELEASE</version>
     <packaging>jar</packaging>
+
+    <developers>
+        <developer>
+            <id>RaitonBL</id>
+            <name>Delfim Marime</name>
+            <email>Delfimarime@raitonbl.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <properties>
+                <github>https://github.com/Delfimarime</github>
+            </properties>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Delfimarime/inspector4j</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <log4j.version>2.13.3</log4j.version>
@@ -22,7 +44,7 @@
         <dependency>
             <groupId>org.inspector4j</groupId>
             <artifactId>api</artifactId>
-            <version>3.1.1-RELEASE</version>
+            <version>3.1.2-RELEASE</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
