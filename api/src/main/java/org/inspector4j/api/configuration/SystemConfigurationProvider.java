@@ -1,7 +1,7 @@
 package org.inspector4j.api.configuration;
 
 import org.apache.commons.collections4.EnumerationUtils;
-import org.inspector4j.Scope;
+import org.inspector4j.SecretVisibility;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,8 +16,8 @@ public class SystemConfigurationProvider implements ConfigurationProvider {
     private final Predicate<String> predicate;
 
     public SystemConfigurationProvider() {
-        Predicate<String> scopePattern = Pattern.compile("org.inspect4j.configuration.*.scope").asPredicate();
-        Predicate<String> overridePattern = Pattern.compile("org.inspect4j.configuration.*.override").asPredicate();
+        Predicate<String> scopePattern = Pattern.compile("org.inspect4j.configuration.*." + InspectorConfiguration.VISIBILITY_FIELD).asPredicate();
+        Predicate<String> overridePattern = Pattern.compile("org.inspect4j.configuration.*."+ InspectorConfiguration.ALLOW_RUNTIME_CONFIGURATION_FIELD).asPredicate();
         this.predicate = (value) -> {
             if (value == null) {
                 return Boolean.FALSE;
@@ -40,14 +40,14 @@ public class SystemConfigurationProvider implements ConfigurationProvider {
         Inspector4JConfiguration configuration = new Inspector4JConfiguration();
 
         configuration.setRoot(new InspectorConfiguration());
-        configuration.getRoot().setScope(get("org.inspect4j.scope", Scope.class));
-        configuration.getRoot().setOverridable(get("org.inspect4j.override", Boolean.class));
+        configuration.getRoot().setVisibility(get("org.inspect4j." + InspectorConfiguration.VISIBILITY_FIELD, SecretVisibility.class));
+        configuration.getRoot().setAllowRuntimeConfiguration(get("org.inspect4j." + InspectorConfiguration.ALLOW_RUNTIME_CONFIGURATION_FIELD, Boolean.class));
         configuration.setChildren(new HashMap<>());
 
         for (String key : keys) {
             InspectorConfiguration instance = new InspectorConfiguration();
-            instance.setScope(get("org.inspect4j." + key + ".scope", Scope.class));
-            instance.setOverridable(get("org.inspect4j." + key + ".override", Boolean.class));
+            instance.setVisibility(get("org.inspect4j." + key + "." + InspectorConfiguration.VISIBILITY_FIELD, SecretVisibility.class));
+            instance.setAllowRuntimeConfiguration(get("org.inspect4j." + key + "." + InspectorConfiguration.ALLOW_RUNTIME_CONFIGURATION_FIELD, Boolean.class));
             configuration.getChildren().put(key, instance);
         }
 
@@ -62,8 +62,8 @@ public class SystemConfigurationProvider implements ConfigurationProvider {
             return null;
         }
 
-        if (returnType.equals(Scope.class)) {
-            return (B) Scope.valueOf(value);
+        if (returnType.equals(SecretVisibility.class)) {
+            return (B) SecretVisibility.valueOf(value);
         }
 
         if (returnType.equals(Boolean.class)) {

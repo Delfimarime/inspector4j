@@ -4,8 +4,8 @@
   <xs:complexType name="RootType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="xs:string" name="scope"/>
-        <xs:attribute type="xs:string" name="override"/>
+        <xs:attribute type="xs:string" name="secrets-visibility"/>
+        <xs:attribute type="xs:string" name="allow-runtime-config"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -13,8 +13,8 @@
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
-        <xs:attribute type="xs:string" name="scope"/>
-        <xs:attribute type="xs:string" name="override"/>
+        <xs:attribute type="xs:string" name="secrets-visibility"/>
+        <xs:attribute type="xs:string" name="allow-runtime-config"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>

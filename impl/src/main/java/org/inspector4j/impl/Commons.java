@@ -1,8 +1,8 @@
 package org.inspector4j.impl;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.inspector4j.api.internal.Node;
 import org.inspector4j.Secret;
+import org.inspector4j.api.internal.Node;
 
 import java.lang.reflect.*;
 import java.math.BigDecimal;
@@ -146,7 +146,9 @@ public class Commons {
 
         Object object;
 
-        if (node.isArray()) {
+        if (node instanceof MaskedNode) {
+            object = isKnownType(node.getType()) ? "**" : "{**}";
+        } else if (node.isArray()) {
             object = Arrays.stream(node.keys()).map(each -> Commons.unwrap(each, cache)).map(node::get).map(each -> Commons.unwrap(each, cache)).toArray(Object[]::new);
         } else if (node.isCollection()) {
             object = Arrays.stream(node.keys()).map(each -> Commons.unwrap(each, cache)).collect(Collectors.toList());
@@ -175,6 +177,5 @@ public class Commons {
 
         return map;
     }
-
 
 }

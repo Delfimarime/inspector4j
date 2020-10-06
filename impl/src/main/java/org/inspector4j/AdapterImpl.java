@@ -6,6 +6,7 @@ import org.inspector4j.api.configuration.Configuration;
 import org.inspector4j.api.internal.Node;
 import org.inspector4j.api.internal.NodeFactory;
 import org.inspector4j.impl.Commons;
+import org.inspector4j.impl.MaskedNode;
 import org.inspector4j.impl.NodeFactoryImpl;
 
 import java.lang.reflect.Method;
@@ -19,11 +20,11 @@ public class AdapterImpl implements Adapter {
 
     @Override
     public InspectionResult inspect(Configuration configuration, Method method, Object[] args) {
-        return inspect(configuration, method, args, Scope.ATTRIBUTE);
+        return inspect(configuration, method, args, SecretVisibility.MASKED);
     }
 
     @Override
-    public InspectionResult inspect(Configuration configuration, Method method, Object[] args, Scope scope) {
+    public InspectionResult inspect(Configuration configuration, Method method, Object[] args, SecretVisibility visibility) {
 
         if (method == null) {
             throw new IllegalArgumentException("Method mustn't be null ");
@@ -33,13 +34,13 @@ public class AdapterImpl implements Adapter {
             throw new IllegalArgumentException("Args mustn't be null ");
         }
 
-        Scope vScope = configuration.isOverridable() ? scope : configuration.getScope();
+        SecretVisibility target = configuration.isOverridable() ? visibility : configuration.getScope();
 
-        if (vScope == null) {
-            vScope = configuration.getScope();
+        if (target == null) {
+            target = configuration.getScope();
         }
 
-        Node node = map(method, args, vScope);
+        Node node = map(method, args, target);
 
         return (InspectionResult) Proxy.newProxyInstance(InspectionResult.class.getClassLoader(), new Class[]{Node.class, InspectionResult.class}, (obj, exec, vars) -> {
             if (exec.getName().equals("getMethod")) {
@@ -53,14 +54,18 @@ public class AdapterImpl implements Adapter {
 
     }
 
-    private Node map(Method method, Object[] args, Scope scope) {
+    private Node map(Method method, Object[] args, SecretVisibility visibility) {
         Node.Builder builder = nodeFactory.newBuilder();
 
         for (int index = 0; index < method.getParameterCount(); index++) {
             Parameter parameter = method.getParameters()[index];
 
-            if (Scope.SECRET.equals(scope) || (scope.equals(Scope.ATTRIBUTE) && !Commons.isSecret(parameter))) {
-                builder.setNode(parameter.getName(), nodeFactory.create(args[index], scope));
+            boolean isSecret = Commons.isSecret(parameter);
+
+            if (SecretVisibility.VISIBLE.equals(visibility) || (visibility.equals(SecretVisibility.MASKED) && !isSecret)) {
+                builder.setNode(parameter.getName(), nodeFactory.create(args[index], visibility));
+            } else if (visibility.equals(SecretVisibility.MASKED)) {
+                builder.setNode(parameter.getName(), new MaskedNode(args[index].getClass()));
             }
 
         }

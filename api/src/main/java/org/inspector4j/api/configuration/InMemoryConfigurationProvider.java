@@ -1,6 +1,6 @@
 package org.inspector4j.api.configuration;
 
-import org.inspector4j.Scope;
+import org.inspector4j.SecretVisibility;
 
 import java.util.HashMap;
 
@@ -19,19 +19,19 @@ public class InMemoryConfigurationProvider implements ConfigurationProvider {
         return configuration;
     }
 
-    public InMemoryConfigurationProvider setScope(Scope scope) {
-        configuration.getRoot().setScope(scope);
+    public InMemoryConfigurationProvider setSecretVisibility(SecretVisibility visibility) {
+        configuration.getRoot().setVisibility(visibility);
         return this;
     }
 
-    public InMemoryConfigurationProvider setOverridable(Boolean override) {
-        configuration.getRoot().setOverridable(override);
+    public InMemoryConfigurationProvider setAllowRuntimeConfiguration(Boolean override) {
+        configuration.getRoot().setAllowRuntimeConfiguration(override);
         return this;
     }
 
-    public InMemoryConfigurationProvider setScope(String name, Scope scope) {
+    public InMemoryConfigurationProvider setSecretVisibility(String name, SecretVisibility visibility) {
         if (name == null) {
-            return setScope(scope);
+            return setSecretVisibility(visibility);
         }
 
         InspectorConfiguration configuration = this.configuration.getChildren().get(name);
@@ -41,13 +41,13 @@ public class InMemoryConfigurationProvider implements ConfigurationProvider {
             this.configuration.getChildren().put(name, configuration);
         }
 
-        configuration.setScope(scope);
+        configuration.setVisibility(visibility);
         return this;
     }
 
-    public InMemoryConfigurationProvider setOverridable(String name, Boolean override) {
+    public InMemoryConfigurationProvider setAllowRuntimeConfiguration(String name, Boolean override) {
         if (name == null) {
-            return setOverridable(override);
+            return setAllowRuntimeConfiguration(override);
         }
 
         InspectorConfiguration configuration = this.configuration.getChildren().get(name);
@@ -58,7 +58,7 @@ public class InMemoryConfigurationProvider implements ConfigurationProvider {
         }
 
 
-        configuration.setOverridable(override);
+        configuration.setAllowRuntimeConfiguration(override);
         return this;
     }
 

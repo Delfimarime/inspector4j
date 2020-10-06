@@ -1,7 +1,7 @@
 package org.inspector4j.api.configuration;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.inspector4j.Scope;
+import org.inspector4j.SecretVisibility;
 import org.inspector4j.api.configuration.xml.XmlConfigurationProvider;
 
 import java.util.*;
@@ -33,21 +33,21 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         this.seq = container.stream().map(ConfigurationProvider::toProperties).filter(Objects::nonNull).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    public Scope getScope() {
+    public SecretVisibility getScope() {
 
         for (Inspector4JConfiguration configuration : seq) {
-            Scope scope = configuration.getRoot().getScope();
+            SecretVisibility visibility = configuration.getRoot().getVisibility();
 
-            if (scope != null) {
-                return scope;
+            if (visibility != null) {
+                return visibility;
             }
 
         }
 
-        return Scope.ATTRIBUTE;
+        return SecretVisibility.MASKED;
     }
 
-    public Scope getScope(String name) {
+    public SecretVisibility getScope(String name) {
         if (name == null) {
             return getScope();
         }
@@ -55,7 +55,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         for (Inspector4JConfiguration configuration : seq) {
             for (Map.Entry<String, InspectorConfiguration> each : configuration.getChildren().entrySet()) {
                 if (each.getKey().equals(name)) {
-                    Scope value = each.getValue().getScope();
+                    SecretVisibility value = each.getValue().getVisibility();
                     if (value != null) {
                         return value;
                     }
@@ -64,12 +64,12 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             }
         }
 
-        return Scope.ATTRIBUTE;
+        return SecretVisibility.MASKED;
     }
 
     public boolean isOverridable() {
         for (Inspector4JConfiguration configuration : seq) {
-            Boolean value = configuration.getRoot().getOverridable();
+            Boolean value = configuration.getRoot().getAllowRuntimeConfiguration();
 
             if (value != null) {
                 return Boolean.FALSE;
@@ -88,7 +88,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         for (Inspector4JConfiguration configuration : seq) {
             for (Map.Entry<String, InspectorConfiguration> each : configuration.getChildren().entrySet()) {
                 if (each.getKey().equals(name)) {
-                    Boolean value = each.getValue().getOverridable();
+                    Boolean value = each.getValue().getAllowRuntimeConfiguration();
                     if (value != null) {
                         return value;
                     }
@@ -101,32 +101,32 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public ConfigurationManager setScope(Scope scope) {
-        inMemory.setScope(scope);
+    public ConfigurationManager setScope(SecretVisibility visibility) {
+        inMemory.setSecretVisibility(visibility);
         return this;
     }
 
     @Override
     public ConfigurationManager setOverridable(Boolean override) {
-        inMemory.setOverridable(override);
+        inMemory.setAllowRuntimeConfiguration(override);
         return this;
     }
 
     @Override
-    public ConfigurationManager setScope(String name, Scope scope) {
-        inMemory.setScope(name, scope);
+    public ConfigurationManager setScope(String name, SecretVisibility visibility) {
+        inMemory.setSecretVisibility(name, visibility);
         return this;
     }
 
     @Override
     public ConfigurationManager setOverridable(String name, Boolean override) {
-        inMemory.setOverridable(name, override);
+        inMemory.setAllowRuntimeConfiguration(name, override);
         return this;
     }
 
     @Override
-    public ConfigurationManager setScope(Class<?> cls, Scope scope) {
-        return setScope(cls == null ? null : cls.getName(), scope);
+    public ConfigurationManager setScope(Class<?> cls, SecretVisibility visibility) {
+        return setScope(cls == null ? null : cls.getName(), visibility);
     }
 
     @Override

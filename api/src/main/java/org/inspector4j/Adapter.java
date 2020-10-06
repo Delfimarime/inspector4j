@@ -9,6 +9,6 @@ public interface Adapter {
 
     InspectionResult inspect(Configuration configuration, Method method, Object[] args);
 
-    InspectionResult inspect(Configuration configuration, Method method, Object[] args, Scope scope);
+    InspectionResult inspect(Configuration configuration, Method method, Object[] args, SecretVisibility visibility);
 
 }

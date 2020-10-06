@@ -2,7 +2,7 @@ package org.inspector4j.api.configuration.xml;
 
 import org.apache.commons.lang3.StringUtils;
 import org.inspector4j.Inspect4JException;
-import org.inspector4j.Scope;
+import org.inspector4j.SecretVisibility;
 import org.inspector4j.api.configuration.ConfigurationProvider;
 import org.inspector4j.api.configuration.Inspector4JConfiguration;
 import org.inspector4j.api.configuration.InspectorConfiguration;
@@ -40,8 +40,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
 
             if (xmlConfiguration.getRoot() != null) {
                 configuration.setRoot(new InspectorConfiguration());
-                configuration.getRoot().setScope(Optional.ofNullable(parse(xmlConfiguration.getRoot().getScope())).map(Scope::valueOf).orElse(null));
-                configuration.getRoot().setOverridable(Optional.ofNullable(parse(xmlConfiguration.getRoot().getOverridable())).map(Boolean::parseBoolean).orElse(null));
+                configuration.getRoot().setVisibility(Optional.ofNullable(parse(xmlConfiguration.getRoot().getSecretsVisibility())).map(SecretVisibility::valueOf).orElse(null));
+                configuration.getRoot().setAllowRuntimeConfiguration(Optional.ofNullable(parse(xmlConfiguration.getRoot().getAllowRuntimeConfiguration())).map(Boolean::parseBoolean).orElse(null));
             }
 
             Map<String, InspectorConfiguration> config = new HashMap<>();
@@ -50,8 +50,8 @@ public class XmlConfigurationProvider implements ConfigurationProvider {
                 for (XmlNamedInspectorConfiguration each : xmlConfiguration.getChildren()) {
                     if (StringUtils.isNotBlank(each.getName()) && !config.containsKey(each.getName())) {
                         InspectorConfiguration instance = new InspectorConfiguration();
-                        instance.setScope(Optional.ofNullable(parse(each.getScope())).map(Scope::valueOf).orElse(null));
-                        instance.setOverridable(Optional.ofNullable(parse(each.getOverridable())).map(Boolean::parseBoolean).orElse(null));
+                        instance.setVisibility(Optional.ofNullable(parse(each.getSecretsVisibility())).map(SecretVisibility::valueOf).orElse(null));
+                        instance.setAllowRuntimeConfiguration(Optional.ofNullable(parse(each.getAllowRuntimeConfiguration())).map(Boolean::parseBoolean).orElse(null));
                         config.put(each.getName(), instance);
                     }
                 }

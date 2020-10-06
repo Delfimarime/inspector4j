@@ -1,10 +1,10 @@
 package org.inspector4j.api.configuration;
 
-import org.inspector4j.Scope;
+import org.inspector4j.SecretVisibility;
 
 public interface Configuration {
 
-    Scope getScope();
+    SecretVisibility getScope();
 
     boolean isOverridable();
 

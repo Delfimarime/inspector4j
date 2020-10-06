@@ -1,6 +1,6 @@
 package org.inspector4j.api.configuration.xml;
 
-import org.inspector4j.Scope;
+import org.inspector4j.api.configuration.InspectorConfiguration;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,29 +11,29 @@ import java.io.Serializable;
 public class XmlInspectorConfiguration implements Serializable {
 
 
-    @XmlAttribute(name = "scope")
-    private String scope;
+    @XmlAttribute(name = InspectorConfiguration.VISIBILITY_FIELD)
+    private String secretsVisibility;
 
-    @XmlAttribute(name = "override")
-    private String overridable;
+    @XmlAttribute(name = InspectorConfiguration.ALLOW_RUNTIME_CONFIGURATION_FIELD)
+    private String allowRuntimeConfiguration;
 
     public XmlInspectorConfiguration() {
     }
 
-    public String getScope() {
-        return scope;
+    public String getSecretsVisibility() {
+        return secretsVisibility;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    public void setSecretsVisibility(String secretsVisibility) {
+        this.secretsVisibility = secretsVisibility;
     }
 
-    public String getOverridable() {
-        return overridable;
+    public String getAllowRuntimeConfiguration() {
+        return allowRuntimeConfiguration;
     }
 
-    public void setOverridable(String override) {
-        this.overridable = override;
+    public void setAllowRuntimeConfiguration(String override) {
+        this.allowRuntimeConfiguration = override;
     }
 
 }

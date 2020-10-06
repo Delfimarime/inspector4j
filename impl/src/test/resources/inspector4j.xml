@@ -1,4 +1,4 @@
 <Configuration xmlns="http://inspector4j.org">
-    <Root scope="ATTRIBUTE" override="false"/>
-    <Inspector name="org.inspector4j.impl.RunnerImpl" scope="SECRET" override="false"/>
+    <Root secrets-visibility="MASKED" allow-runtime-config="false"/>
+    <Inspector name="org.inspector4j.impl.RunnerImpl" secrets-visibility="VISIBLE" allow-runtime-config="false"/>
 </Configuration>

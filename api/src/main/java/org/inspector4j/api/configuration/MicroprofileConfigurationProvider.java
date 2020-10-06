@@ -3,7 +3,7 @@ package org.inspector4j.api.configuration;
 import org.apache.commons.collections4.IterableUtils;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.inspector4j.Scope;
+import org.inspector4j.SecretVisibility;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -16,8 +16,8 @@ public class MicroprofileConfigurationProvider implements ConfigurationProvider 
     private final Predicate<String> predicate;
 
     public MicroprofileConfigurationProvider() {
-        Predicate<String> scopePattern = Pattern.compile("org.inspect4j.configuration.*.scope").asPredicate();
-        Predicate<String> overridePattern = Pattern.compile("org.inspect4j.configuration.*.override").asPredicate();
+        Predicate<String> scopePattern = Pattern.compile("org.inspect4j.configuration.*." + InspectorConfiguration.VISIBILITY_FIELD).asPredicate();
+        Predicate<String> overridePattern = Pattern.compile("org.inspect4j.configuration.*.allow-runtime-configuration").asPredicate();
         this.predicate = (value) -> {
             if (value == null) {
                 return Boolean.FALSE;
@@ -36,15 +36,15 @@ public class MicroprofileConfigurationProvider implements ConfigurationProvider 
         Inspector4JConfiguration configuration = new Inspector4JConfiguration();
 
         configuration.setRoot(new InspectorConfiguration());
-        configuration.getRoot().setScope(config.getOptionalValue("org.inspect4j.scope", Scope.class).orElse(null));
-        configuration.getRoot().setOverridable(config.getOptionalValue("org.inspect4j.override", Boolean.class).orElse(null));
+        configuration.getRoot().setVisibility(config.getOptionalValue("org.inspect4j." + InspectorConfiguration.VISIBILITY_FIELD, SecretVisibility.class).orElse(null));
+        configuration.getRoot().setAllowRuntimeConfiguration(config.getOptionalValue("org.inspect4j." + InspectorConfiguration.ALLOW_RUNTIME_CONFIGURATION_FIELD, Boolean.class).orElse(null));
         configuration.setChildren(new HashMap<>());
 
         for (String key : keys) {
             InspectorConfiguration instance = new InspectorConfiguration();
 
-            instance.setScope(config.getOptionalValue("org.inspect4j." + key + ".scope", Scope.class).orElse(null));
-            instance.setOverridable(config.getOptionalValue("org.inspect4j." + key + ".override", Boolean.class).orElse(null));
+            instance.setVisibility(config.getOptionalValue("org.inspect4j." + key + "." + InspectorConfiguration.VISIBILITY_FIELD, SecretVisibility.class).orElse(null));
+            instance.setAllowRuntimeConfiguration(config.getOptionalValue("org.inspect4j." + key + "." + InspectorConfiguration.ALLOW_RUNTIME_CONFIGURATION_FIELD, Boolean.class).orElse(null));
 
             configuration.getChildren().put(key, instance);
         }
