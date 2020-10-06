@@ -1,10 +1,12 @@
-package org.inspector4j.api;
+package org.inspector4j.api.internal;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.inspector4j.Adapter;
-import org.inspector4j.api.configuration.InspectorConfiguration;
+import org.inspector4j.api.Inspector;
+import org.inspector4j.api.configuration.Configuration;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 
 public class FactoryImpl implements Factory {
@@ -16,7 +18,7 @@ public class FactoryImpl implements Factory {
     }
 
     @Override
-    public Inspector create(InspectorConfiguration configuration) {
+    public Inspector create(Configuration configuration) {
 
         if (configuration == null) {
             throw new IllegalArgumentException("Configuration mustn't be null");
@@ -25,10 +27,14 @@ public class FactoryImpl implements Factory {
         Object object = new Object();
 
         return (Inspector) Proxy.newProxyInstance(configuration.getClass().getClassLoader(), new Class[]{Inspector.class}, (instance, method, args) -> {
-            if (method.getName().equals("inspect")) {
-                return MethodUtils.invokeMethod(this.adapter, "inspect", ArrayUtils.addFirst(args, configuration));
-            } else {
-                return method.invoke(object, args);
+            try {
+                if (method.getName().equals("inspect")) {
+                    return MethodUtils.invokeMethod(this.adapter, "inspect", ArrayUtils.addFirst(args, configuration));
+                } else {
+                    return method.invoke(object, args);
+                }
+            } catch (InvocationTargetException ex) {
+                throw ex.getCause();
             }
         });
     }
